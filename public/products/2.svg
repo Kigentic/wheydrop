@@ -1,0 +1,9 @@
+<svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="600" height="600" fill="#ffffff"/>
+  <circle cx="300" cy="300" r="150" fill="#FFD600"/>
+  <rect x="235" y="160" width="130" height="280" rx="14" fill="#111111"/>
+  <rect x="248" y="175" width="104" height="60" rx="8" fill="#FFD600"/>
+  <text x="300" y="330" font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">25g</text>
+  <text x="300" y="352" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle">PROTEIN</text>
+  <text x="300" y="372" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle">PRO SHAKE</text>
+</svg>

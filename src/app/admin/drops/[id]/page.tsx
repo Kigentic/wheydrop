@@ -26,8 +26,8 @@ export default async function AdminDropDetail({
   const orderList = (orders ?? []) as Order[];
 
   return (
-    <div className="min-h-screen bg-black text-zinc-50">
-      <header className="border-b border-zinc-800 px-6 py-5">
+    <div className="min-h-screen bg-white text-black">
+      <header className="border-b-2 border-black px-6 py-5">
         <a href="/admin/dashboard" className="text-xl font-bold tracking-tight">
           Admin
         </a>
@@ -36,17 +36,17 @@ export default async function AdminDropDetail({
       <main className="mx-auto max-w-4xl px-6 py-12">
         <div className="flex items-start justify-between">
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wide text-lime-400">
+            <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
               {typedDrop.status}
             </span>
             <h1 className="mt-1 text-2xl font-bold">{typedDrop.title}</h1>
-            <p className="text-zinc-400">{typedDrop.brand_name}</p>
+            <p className="text-zinc-600">{typedDrop.brand_name}</p>
           </div>
 
           <div className="flex gap-3">
             <a
               href={`/api/admin/drops/${typedDrop.id}/orders.csv`}
-              className="rounded-full border border-zinc-700 px-4 py-2 text-sm font-medium hover:border-zinc-500"
+              className="rounded-full border-2 border-black px-4 py-2 text-sm font-medium hover:bg-black hover:text-yellow-400"
             >
               CSV exportieren
             </a>
@@ -55,26 +55,26 @@ export default async function AdminDropDetail({
         </div>
 
         <div className="mt-6 grid grid-cols-3 gap-4">
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4">
-            <div className="text-xs text-zinc-400">Einheiten</div>
+          <div className="rounded-lg border-2 border-black p-4">
+            <div className="text-xs text-zinc-600">Einheiten</div>
             <div className="text-xl font-bold tabular-nums">
               {typedDrop.total_ordered} / {typedDrop.max_units}
             </div>
           </div>
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4">
-            <div className="text-xs text-zinc-400">Preis</div>
+          <div className="rounded-lg border-2 border-black p-4">
+            <div className="text-xs text-zinc-600">Preis</div>
             <div className="text-xl font-bold tabular-nums">{typedDrop.current_price.toFixed(2)} €</div>
           </div>
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4">
-            <div className="text-xs text-zinc-400">Ende</div>
+          <div className="rounded-lg border-2 border-black p-4">
+            <div className="text-xs text-zinc-600">Ende</div>
             <div className="text-xl font-bold">{new Date(typedDrop.ends_at).toLocaleString("de-DE")}</div>
           </div>
         </div>
 
         <h2 className="mt-10 mb-3 text-lg font-bold">Bestellungen ({orderList.length})</h2>
-        <div className="overflow-x-auto rounded-lg border border-zinc-800">
+        <div className="overflow-x-auto rounded-lg border-2 border-black">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-950 text-left text-zinc-400">
+            <thead className="bg-yellow-400 text-left">
               <tr>
                 <th className="px-4 py-3">Kunde</th>
                 <th className="px-4 py-3">Flavor</th>
@@ -86,7 +86,7 @@ export default async function AdminDropDetail({
             </thead>
             <tbody>
               {orderList.map((o) => (
-                <tr key={o.id} className="border-t border-zinc-800">
+                <tr key={o.id} className="border-t border-zinc-300">
                   <td className="px-4 py-3">
                     <div>{o.customer_name}</div>
                     <div className="text-zinc-500">{o.customer_email}</div>

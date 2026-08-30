@@ -9,6 +9,8 @@ interface Tier {
   price: string;
 }
 
+const inputClass = "rounded border border-zinc-400 bg-white px-3 py-2";
+
 export default function NewDrop() {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -17,6 +19,8 @@ export default function NewDrop() {
   const [endsAt, setEndsAt] = useState("");
   const [maxUnits, setMaxUnits] = useState("5000");
   const [flavors, setFlavors] = useState("Vanilla, Chocolate, Strawberry");
+  const [description, setDescription] = useState("");
+  const [imageUrls, setImageUrls] = useState("");
   const [tiers, setTiers] = useState<Tier[]>([
     { min_units: "0", max_units: "249", price: "32.90" },
     { min_units: "250", max_units: "499", price: "30.90" },
@@ -51,6 +55,8 @@ export default function NewDrop() {
       ends_at: new Date(endsAt).toISOString(),
       max_units: Number(maxUnits),
       flavors: flavors.split(",").map((f) => f.trim()).filter(Boolean),
+      description,
+      image_urls: imageUrls.split(",").map((u) => u.trim()).filter(Boolean),
       price_tiers: tiers.map((t) => ({
         min_units: Number(t.min_units),
         max_units: t.max_units === "" ? null : Number(t.max_units),
@@ -75,8 +81,8 @@ export default function NewDrop() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-zinc-50">
-      <header className="border-b border-zinc-800 px-6 py-5">
+    <div className="min-h-screen bg-white text-black">
+      <header className="border-b-2 border-black px-6 py-5">
         <span className="text-xl font-bold tracking-tight">Neuer Drop</span>
       </header>
 
@@ -85,39 +91,59 @@ export default function NewDrop() {
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
               Titel
-              <input value={title} onChange={(e) => setTitle(e.target.value)} required className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2" />
+              <input value={title} onChange={(e) => setTitle(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
               Brand
-              <input value={brand} onChange={(e) => setBrand(e.target.value)} required className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2" />
+              <input value={brand} onChange={(e) => setBrand(e.target.value)} required className={inputClass} />
+            </label>
+
+            <label className="flex flex-col gap-1 text-sm sm:col-span-2">
+              Produktbeschreibung
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className={inputClass}
+              />
+            </label>
+
+            <label className="flex flex-col gap-1 text-sm sm:col-span-2">
+              Bild-URLs (Komma-getrennt, bis zu 4)
+              <input
+                value={imageUrls}
+                onChange={(e) => setImageUrls(e.target.value)}
+                placeholder="/products/1.svg, /products/2.svg, ..."
+                className={inputClass}
+              />
             </label>
 
             <label className="flex flex-col gap-1 text-sm">
               Start
-              <input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} required className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2" />
+              <input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm">
               Ende
-              <input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} required className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2" />
+              <input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm">
               Max. Kontingent
-              <input type="number" value={maxUnits} onChange={(e) => setMaxUnits(e.target.value)} required className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2" />
+              <input type="number" value={maxUnits} onChange={(e) => setMaxUnits(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm">
               Flavors (Komma-getrennt)
-              <input value={flavors} onChange={(e) => setFlavors(e.target.value)} required className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2" />
+              <input value={flavors} onChange={(e) => setFlavors(e.target.value)} required className={inputClass} />
             </label>
           </div>
 
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-zinc-300">Preisstufen</h2>
-              <button type="button" onClick={addTier} className="text-sm text-lime-400 hover:underline">
+              <h2 className="text-sm font-semibold text-zinc-700">Preisstufen</h2>
+              <button type="button" onClick={addTier} className="text-sm font-semibold hover:underline">
                 + Stufe
               </button>
             </div>
@@ -129,22 +155,22 @@ export default function NewDrop() {
                     value={t.min_units}
                     onChange={(e) => updateTier(i, "min_units", e.target.value)}
                     required
-                    className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm"
+                    className={`${inputClass} text-sm`}
                   />
                   <input
                     placeholder="max (leer = ∞)"
                     value={t.max_units}
                     onChange={(e) => updateTier(i, "max_units", e.target.value)}
-                    className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm"
+                    className={`${inputClass} text-sm`}
                   />
                   <input
                     placeholder="Preis"
                     value={t.price}
                     onChange={(e) => updateTier(i, "price", e.target.value)}
                     required
-                    className="rounded border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm"
+                    className={`${inputClass} text-sm`}
                   />
-                  <button type="button" onClick={() => removeTier(i)} className="text-zinc-500 hover:text-red-400">
+                  <button type="button" onClick={() => removeTier(i)} className="text-zinc-500 hover:text-red-600">
                     ✕
                   </button>
                 </div>
@@ -152,12 +178,12 @@ export default function NewDrop() {
             </div>
           </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-red-600">{error}</p>}
 
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-full bg-lime-400 py-3 font-bold text-black hover:bg-lime-300 disabled:opacity-50"
+            className="w-full rounded-full bg-black py-3 font-bold text-yellow-400 hover:bg-zinc-900 disabled:opacity-50"
           >
             {submitting ? "Wird angelegt…" : "Drop anlegen"}
           </button>

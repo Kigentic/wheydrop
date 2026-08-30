@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { Drop, Variant } from "@/lib/types";
+import { Gallery } from "./Gallery";
 
 function nextTier(drop: Drop) {
   const sorted = [...drop.price_tiers].sort((a, b) => a.min_units - b.min_units);
@@ -127,10 +128,12 @@ export function DropView({
 
   if (result === "ok") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black px-6 text-zinc-50">
+      <div className="flex min-h-screen items-center justify-center bg-white px-6 text-black">
         <div className="max-w-md text-center">
-          <h1 className="text-2xl font-bold text-lime-400">Du bist dabei!</h1>
-          <p className="mt-4 text-zinc-300">
+          <h1 className="text-2xl font-bold">
+            Du bist <span className="bg-yellow-400 px-2">dabei!</span>
+          </h1>
+          <p className="mt-4 text-zinc-600">
             Aktueller Preis: <strong>{drop.current_price.toFixed(2)} €</strong>. Möglicher
             Endpreis bei nächster Stufe: {tier ? `${tier.price.toFixed(2)} €` : "bereits erreicht"}.
             Wir schicken dir eine E-Mail sobald der Drop endet.
@@ -141,32 +144,44 @@ export function DropView({
   }
 
   return (
-    <div className="min-h-screen bg-black text-zinc-50">
-      <header className="border-b border-zinc-800 px-6 py-5">
+    <div className="min-h-screen bg-white text-black">
+      <header className="border-b-2 border-black px-6 py-5">
         <a href="/" className="text-xl font-bold tracking-tight">
-          Proteinbörse
+          Protein<span className="bg-black px-1 text-yellow-400">börse</span>
         </a>
       </header>
 
       <main className="mx-auto max-w-4xl px-6 py-12">
-        <span className="text-xs font-semibold uppercase tracking-wide text-lime-400">
+        <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
           {drop.status === "active" ? "Live" : drop.status}
         </span>
-        <h1 className="mt-1 text-3xl font-bold">{drop.title}</h1>
-        <p className="text-zinc-400">{drop.brand_name}</p>
+        <h1 className="mt-2 text-3xl font-bold">{drop.title}</h1>
+        <p className="text-zinc-600">{drop.brand_name}</p>
+
+        {drop.image_urls.length > 0 && (
+          <div className="mt-8">
+            <Gallery images={drop.image_urls} alt={drop.title} />
+          </div>
+        )}
+
+        {drop.description && (
+          <p className="mt-6 max-w-2xl leading-relaxed text-zinc-700">{drop.description}</p>
+        )}
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2">
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-6">
-            <div className="text-sm text-zinc-400">Bestellte Einheiten</div>
-            <div className="mt-1 text-5xl font-bold tabular-nums text-lime-400">
+          <div className="rounded-lg border-2 border-black p-6">
+            <div className="text-sm text-zinc-600">Bestellte Einheiten</div>
+            <div className="mt-1 text-5xl font-bold tabular-nums">
               {drop.total_ordered}
             </div>
-            <div className="mt-4 text-sm text-zinc-400">Aktueller Preis</div>
-            <div className="text-3xl font-bold tabular-nums">{drop.current_price.toFixed(2)} €</div>
+            <div className="mt-4 text-sm text-zinc-600">Aktueller Preis</div>
+            <div className="text-3xl font-bold tabular-nums">
+              <span className="bg-yellow-400 px-1">{drop.current_price.toFixed(2)} €</span>
+            </div>
           </div>
 
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-6">
-            <div className="text-sm text-zinc-400">Drop endet in</div>
+          <div className="rounded-lg border-2 border-black p-6">
+            <div className="text-sm text-zinc-600">Drop endet in</div>
             <div className="mt-1 text-4xl font-bold tabular-nums">
               {!countdown.ready
                 ? "--:--:--"
@@ -177,13 +192,13 @@ export function DropView({
 
             {tier && (
               <div className="mt-6">
-                <div className="flex justify-between text-sm text-zinc-400">
+                <div className="flex justify-between text-sm text-zinc-600">
                   <span>Nächste Stufe: {tier.price.toFixed(2)} €</span>
                   <span>noch {unitsToNextTier} Einheiten</span>
                 </div>
-                <div className="mt-2 h-2 rounded-full bg-zinc-800">
+                <div className="mt-2 h-2 rounded-full border border-black bg-white">
                   <div
-                    className="h-2 rounded-full bg-lime-400 transition-all"
+                    className="h-full rounded-full bg-yellow-400 transition-all"
                     style={{ width: `${progressPct}%` }}
                   />
                 </div>
@@ -192,7 +207,7 @@ export function DropView({
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-10 rounded-lg border border-zinc-800 bg-zinc-950 p-6">
+        <form onSubmit={handleSubmit} className="mt-10 rounded-lg border-2 border-black p-6">
           <h2 className="text-lg font-bold">Jetzt dabei sein</h2>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -202,7 +217,7 @@ export function DropView({
                 value={selectedVariant}
                 onChange={(e) => setSelectedVariant(e.target.value)}
                 required
-                className="rounded border border-zinc-700 bg-black px-3 py-2"
+                className="rounded border border-zinc-400 bg-white px-3 py-2"
               >
                 {variants.map((v) => (
                   <option key={v.id} value={v.id}>
@@ -220,7 +235,7 @@ export function DropView({
                 value={quantity}
                 onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
                 required
-                className="rounded border border-zinc-700 bg-black px-3 py-2"
+                className="rounded border border-zinc-400 bg-white px-3 py-2"
               />
             </label>
 
@@ -230,7 +245,7 @@ export function DropView({
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
-                className="rounded border border-zinc-700 bg-black px-3 py-2"
+                className="rounded border border-zinc-400 bg-white px-3 py-2"
               />
             </label>
 
@@ -241,7 +256,7 @@ export function DropView({
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 required
-                className="rounded border border-zinc-700 bg-black px-3 py-2"
+                className="rounded border border-zinc-400 bg-white px-3 py-2"
               />
             </label>
 
@@ -251,7 +266,7 @@ export function DropView({
                 value={form.street}
                 onChange={(e) => setForm({ ...form, street: e.target.value })}
                 required
-                className="rounded border border-zinc-700 bg-black px-3 py-2"
+                className="rounded border border-zinc-400 bg-white px-3 py-2"
               />
             </label>
 
@@ -261,7 +276,7 @@ export function DropView({
                 value={form.zip}
                 onChange={(e) => setForm({ ...form, zip: e.target.value })}
                 required
-                className="rounded border border-zinc-700 bg-black px-3 py-2"
+                className="rounded border border-zinc-400 bg-white px-3 py-2"
               />
             </label>
 
@@ -271,20 +286,20 @@ export function DropView({
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
                 required
-                className="rounded border border-zinc-700 bg-black px-3 py-2"
+                className="rounded border border-zinc-400 bg-white px-3 py-2"
               />
             </label>
           </div>
 
           <div className="mt-6 flex items-center justify-between">
-            <div className="text-sm text-zinc-400">
+            <div className="text-sm text-zinc-600">
               Autorisiert wird der Maximalpreis: <strong>{maxAmount.toFixed(2)} €</strong>.
               Belastet wird nur der tatsächlich erreichte Endpreis.
             </div>
           </div>
 
           {result === "error" && (
-            <p className="mt-4 text-sm text-red-400">
+            <p className="mt-4 text-sm text-red-600">
               Etwas ist schiefgelaufen. Bitte nochmal versuchen.
             </p>
           )}
@@ -292,7 +307,7 @@ export function DropView({
           <button
             type="submit"
             disabled={submitting || countdown.done}
-            className="mt-6 w-full rounded-full bg-lime-400 py-3 font-bold text-black transition hover:bg-lime-300 disabled:opacity-50"
+            className="mt-6 w-full rounded-full bg-black py-3 font-bold text-yellow-400 transition hover:bg-zinc-900 disabled:opacity-50"
           >
             {countdown.done ? "Drop beendet" : submitting ? "Wird verarbeitet…" : "Jetzt dabei sein"}
           </button>

@@ -30,8 +30,8 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black text-zinc-50">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-lg border border-zinc-800 bg-zinc-950 p-8">
+    <div className="flex min-h-screen items-center justify-center bg-white text-black">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-lg border-2 border-black p-8">
         <h1 className="text-xl font-bold">Admin Login</h1>
         <input
           type="password"
@@ -40,13 +40,13 @@ export default function AdminLogin() {
           placeholder="Passwort"
           required
           autoFocus
-          className="mt-6 w-full rounded border border-zinc-700 bg-black px-3 py-2"
+          className="mt-6 w-full rounded border border-zinc-400 bg-white px-3 py-2"
         />
-        {error && <p className="mt-2 text-sm text-red-400">Falsches Passwort.</p>}
+        {error && <p className="mt-2 text-sm text-red-600">Falsches Passwort.</p>}
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 w-full rounded-full bg-lime-400 py-3 font-bold text-black transition hover:bg-lime-300 disabled:opacity-50"
+          className="mt-6 w-full rounded-full bg-black py-3 font-bold text-yellow-400 transition hover:bg-zinc-900 disabled:opacity-50"
         >
           Login
         </button>

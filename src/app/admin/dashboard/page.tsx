@@ -15,13 +15,13 @@ export default async function AdminDashboard() {
   const list = (drops ?? []) as Drop[];
 
   return (
-    <div className="min-h-screen bg-black text-zinc-50">
-      <header className="flex items-center justify-between border-b border-zinc-800 px-6 py-5">
+    <div className="min-h-screen bg-white text-black">
+      <header className="flex items-center justify-between border-b-2 border-black px-6 py-5">
         <span className="text-xl font-bold tracking-tight">Admin</span>
         <div className="flex items-center gap-4">
           <Link
             href="/admin/drops/new"
-            className="rounded-full bg-lime-400 px-4 py-2 text-sm font-bold text-black hover:bg-lime-300"
+            className="rounded-full bg-black px-4 py-2 text-sm font-bold text-yellow-400 hover:bg-zinc-900"
           >
             Neuer Drop
           </Link>
@@ -32,9 +32,9 @@ export default async function AdminDashboard() {
       <main className="mx-auto max-w-4xl px-6 py-12">
         <h1 className="mb-6 text-2xl font-bold">Alle Drops</h1>
 
-        <div className="overflow-x-auto rounded-lg border border-zinc-800">
+        <div className="overflow-x-auto rounded-lg border-2 border-black">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-950 text-left text-zinc-400">
+            <thead className="bg-yellow-400 text-left">
               <tr>
                 <th className="px-4 py-3">Titel</th>
                 <th className="px-4 py-3">Status</th>
@@ -45,9 +45,9 @@ export default async function AdminDashboard() {
             </thead>
             <tbody>
               {list.map((drop) => (
-                <tr key={drop.id} className="border-t border-zinc-800 hover:bg-zinc-950">
+                <tr key={drop.id} className="border-t border-zinc-300 hover:bg-yellow-50">
                   <td className="px-4 py-3">
-                    <Link href={`/admin/drops/${drop.id}`} className="font-medium hover:text-lime-400">
+                    <Link href={`/admin/drops/${drop.id}`} className="font-medium hover:underline">
                       {drop.title}
                     </Link>
                   </td>

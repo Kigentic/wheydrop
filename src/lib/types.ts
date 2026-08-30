@@ -18,6 +18,8 @@ export interface Drop {
   max_units: number;
   total_ordered: number;
   current_price: number;
+  description: string;
+  image_urls: string[];
   created_at: string;
 }
 
