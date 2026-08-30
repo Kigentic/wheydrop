@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { SiteHeader } from "@/components/SiteHeader";
 import type { Drop } from "@/lib/types";
 
 export const revalidate = 0;
@@ -16,10 +17,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <header className="border-b-2 border-black px-6 py-5">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/wheydrop_logo.png" alt="Wheydrop" className="h-9 w-auto rounded" />
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto max-w-4xl px-6 py-12">
         <h1 className="mb-8 text-2xl font-bold">Aktuelle Drops</h1>

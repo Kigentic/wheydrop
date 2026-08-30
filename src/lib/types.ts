@@ -35,6 +35,7 @@ export interface Order {
   id: string;
   drop_id: string;
   variant_id: string;
+  customer_id: string | null;
   quantity: number;
   authorized_amount: number;
   final_amount: number | null;

@@ -65,6 +65,18 @@ export function DropView({
 
   useEffect(() => {
     const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      setForm((prev) => ({
+        ...prev,
+        name: prev.name || (user.user_metadata?.name as string | undefined) || "",
+        email: prev.email || user.email || "",
+      }));
+    });
+  }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
 
     const channel = supabase
       .channel(`drop-${drop.id}`)
@@ -145,13 +157,6 @@ export function DropView({
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <header className="border-b-2 border-black px-6 py-5">
-        <a href="/">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/wheydrop_logo.png" alt="Wheydrop" className="h-9 w-auto rounded" />
-        </a>
-      </header>
-
       <main className="mx-auto max-w-4xl px-6 py-12">
         <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
           {drop.status === "active" ? "Live" : drop.status}

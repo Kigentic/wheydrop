@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Drop } from "@/lib/types";
 
@@ -9,6 +10,11 @@ export async function POST(req: NextRequest) {
   if (!drop_id || !variant_id || !quantity || !customer_name || !customer_email || !customer_address) {
     return NextResponse.json({ error: "missing fields" }, { status: 400 });
   }
+
+  const sessionClient = await createClient();
+  const {
+    data: { user },
+  } = await sessionClient.auth.getUser();
 
   const supabase = createAdminClient();
 
@@ -40,6 +46,7 @@ export async function POST(req: NextRequest) {
       quantity,
       authorized_amount,
       status: "authorized",
+      customer_id: user?.id ?? null,
       customer_name,
       customer_email,
       customer_address,
