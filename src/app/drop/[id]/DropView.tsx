@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Drop, Variant } from "@/lib/types";
 import { Gallery } from "./Gallery";
+import { WhatsAppShareButton } from "@/components/WhatsAppShareButton";
 
 function nextTier(drop: Drop) {
   const sorted = [...drop.price_tiers].sort((a, b) => a.min_units - b.min_units);
@@ -41,6 +43,7 @@ export function DropView({
   drop: Drop;
   initialVariants: Variant[];
 }) {
+  const router = useRouter();
   const [drop, setDrop] = useState(initialDrop);
   const [variants, setVariants] = useState(initialVariants);
   const [selectedVariant, setSelectedVariant] = useState(initialVariants[0]?.id ?? "");
@@ -55,6 +58,19 @@ export function DropView({
   });
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<"idle" | "ok" | "error">("idle");
+  const [dropUrl, setDropUrl] = useState("");
+
+  useEffect(() => {
+    setDropUrl(window.location.href);
+  }, []);
+
+  useEffect(() => {
+    if (result !== "ok") return;
+    const timeout = setTimeout(() => {
+      router.push("/");
+    }, 6000);
+    return () => clearTimeout(timeout);
+  }, [result, router]);
 
   const countdown = useCountdown(drop.ends_at);
   const tier = nextTier(drop);
@@ -150,6 +166,14 @@ export function DropView({
             Endpreis bei nächster Stufe: {tier ? `${tier.price.toFixed(2)} €` : "bereits erreicht"}.
             Wir schicken dir eine E-Mail sobald der Drop endet.
           </p>
+
+          {dropUrl && (
+            <div className="mt-6 flex justify-center">
+              <WhatsAppShareButton dropTitle={drop.title} url={dropUrl} />
+            </div>
+          )}
+
+          <p className="mt-6 text-sm text-zinc-400">Du wirst gleich zur Startseite weitergeleitet…</p>
         </div>
       </div>
     );
@@ -158,11 +182,26 @@ export function DropView({
   return (
     <div className="min-h-screen bg-white text-black">
       <main className="mx-auto max-w-4xl px-6 py-12">
-        <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
-          {drop.status === "active" ? "Live" : drop.status}
-        </span>
-        <h1 className="mt-2 text-3xl font-bold">{drop.title}</h1>
-        <p className="text-zinc-600">{drop.brand_name}</p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
+              {drop.status === "active" ? "Live" : drop.status}
+            </span>
+            <h1 className="mt-2 text-3xl font-bold">{drop.title}</h1>
+            <p className="text-zinc-600">{drop.brand_name}</p>
+          </div>
+          {dropUrl && (
+            <div className="hidden shrink-0 sm:block">
+              <WhatsAppShareButton dropTitle={drop.title} url={dropUrl} />
+            </div>
+          )}
+        </div>
+
+        {dropUrl && (
+          <div className="mt-4 sm:hidden">
+            <WhatsAppShareButton dropTitle={drop.title} url={dropUrl} />
+          </div>
+        )}
 
         {drop.image_urls.length > 0 && (
           <div className="mt-8">
