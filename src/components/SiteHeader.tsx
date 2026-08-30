@@ -1,11 +1,21 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
+async function getCurrentUser() {
+  try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    return user;
+  } catch {
+    // never let an auth hiccup take down the whole layout
+    return null;
+  }
+}
+
 export async function SiteHeader() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   return (
     <header className="flex items-center justify-between bg-black px-6 py-3">
