@@ -6,23 +6,33 @@ export const revalidate = 0;
 
 export default async function Home() {
   let list: Drop[] = [];
+  const dbgUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "MISSING";
+  const dbgKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    ? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.slice(-8)
+    : "MISSING";
+  let dbgErr = "none";
 
   try {
     const supabase = await createClient();
-    const { data: drops } = await supabase
+    const { data: drops, error } = await supabase
       .from("drops")
       .select("*")
       .in("status", ["active", "upcoming"])
       .order("starts_at", { ascending: true });
+    if (error) dbgErr = JSON.stringify(error);
     list = (drops ?? []) as Drop[];
   } catch (err) {
-    console.error("Failed to load drops:", err);
+    dbgErr = `EXC: ${err instanceof Error ? err.message : JSON.stringify(err)}`;
   }
 
   return (
     <div className="min-h-screen bg-white text-black">
       <main className="mx-auto max-w-4xl px-6 py-12">
         <h1 className="mb-8 text-2xl font-bold">Aktuelle Drops</h1>
+
+        <p className="mb-4 text-xs text-zinc-400">
+          DBG url={dbgUrl} keyEnd={dbgKey} err={dbgErr} count={list.length}
+        </p>
 
         {list.length === 0 && (
           <p className="text-zinc-600">Aktuell kein aktiver Drop. Schau bald wieder vorbei.</p>
