@@ -5,14 +5,19 @@ import type { Drop } from "@/lib/types";
 export const revalidate = 0;
 
 export default async function Home() {
-  const supabase = await createClient();
-  const { data: drops } = await supabase
-    .from("drops")
-    .select("*")
-    .in("status", ["active", "upcoming"])
-    .order("starts_at", { ascending: true });
+  let list: Drop[] = [];
 
-  const list = (drops ?? []) as Drop[];
+  try {
+    const supabase = await createClient();
+    const { data: drops } = await supabase
+      .from("drops")
+      .select("*")
+      .in("status", ["active", "upcoming"])
+      .order("starts_at", { ascending: true });
+    list = (drops ?? []) as Drop[];
+  } catch (err) {
+    console.error("Failed to load drops:", err);
+  }
 
   return (
     <div className="min-h-screen bg-white text-black">
