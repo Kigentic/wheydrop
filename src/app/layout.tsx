@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Wheydrop",
   description: "Group-Buying für Whey Protein und Supplements",
+  icons: {
+    icon: "/wheydrop_favicon.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
