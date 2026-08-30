@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -37,6 +38,12 @@ export default async function AccountPage() {
           <div>
             <h1 className="text-2xl font-bold">Mein Konto</h1>
             <p className="text-zinc-600">{user.email}</p>
+            <Link
+              href="/account/change-password"
+              className="mt-1 inline-block text-sm font-semibold hover:underline"
+            >
+              Passwort ändern
+            </Link>
           </div>
           <LogoutButton />
         </div>
