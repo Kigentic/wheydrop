@@ -17,9 +17,8 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-white text-black">
       <header className="border-b-2 border-black px-6 py-5">
-        <span className="text-xl font-bold tracking-tight">
-          Protein<span className="bg-black px-1 text-yellow-400">börse</span>
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/wheydrop_logo.png" alt="Wheydrop" className="h-9 w-auto rounded" />
       </header>
 
       <main className="mx-auto max-w-4xl px-6 py-12">
