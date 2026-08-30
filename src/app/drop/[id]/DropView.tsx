@@ -10,21 +10,27 @@ function nextTier(drop: Drop) {
 }
 
 function useCountdown(endsAt: string) {
-  const [remaining, setRemaining] = useState(() => Date.parse(endsAt) - Date.now());
+  // starts null so server and first client render match; real value fills in after mount
+  const [remaining, setRemaining] = useState<number | null>(null);
 
   useEffect(() => {
+    setRemaining(Date.parse(endsAt) - Date.now());
     const interval = setInterval(() => {
       setRemaining(Date.parse(endsAt) - Date.now());
     }, 1000);
     return () => clearInterval(interval);
   }, [endsAt]);
 
+  if (remaining === null) {
+    return { ready: false, done: false, h: 0, m: 0, s: 0 };
+  }
+
   const done = remaining <= 0;
   const h = Math.max(0, Math.floor(remaining / 3_600_000));
   const m = Math.max(0, Math.floor((remaining % 3_600_000) / 60_000));
   const s = Math.max(0, Math.floor((remaining % 60_000) / 1000));
 
-  return { done, h, m, s };
+  return { ready: true, done, h, m, s };
 }
 
 export function DropView({
@@ -162,7 +168,9 @@ export function DropView({
           <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-6">
             <div className="text-sm text-zinc-400">Drop endet in</div>
             <div className="mt-1 text-4xl font-bold tabular-nums">
-              {countdown.done
+              {!countdown.ready
+                ? "--:--:--"
+                : countdown.done
                 ? "Beendet"
                 : `${String(countdown.h).padStart(2, "0")}:${String(countdown.m).padStart(2, "0")}:${String(countdown.s).padStart(2, "0")}`}
             </div>
