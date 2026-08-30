@@ -27,9 +27,10 @@ export default async function Home() {
         <img
           src="/wheydrop_header.png"
           alt="Wheydrop Community"
-          className="absolute inset-0 h-full w-full object-cover opacity-60"
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: "center 15%" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
 
         <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-28">
           <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">
