@@ -5,11 +5,16 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Drop, Variant } from "@/lib/types";
 import { Gallery } from "./Gallery";
-import { WhatsAppShareButton } from "@/components/WhatsAppShareButton";
+import { ShareButtons } from "@/components/ShareButtons";
 
 function nextTier(drop: Drop) {
   const sorted = [...drop.price_tiers].sort((a, b) => a.min_units - b.min_units);
   return sorted.find((t) => t.min_units > drop.total_ordered) ?? null;
+}
+
+function bestTier(drop: Drop) {
+  const sorted = [...drop.price_tiers].sort((a, b) => a.min_units - b.min_units);
+  return sorted[sorted.length - 1] ?? null;
 }
 
 function useCountdown(endsAt: string) {
@@ -74,7 +79,10 @@ export function DropView({
 
   const countdown = useCountdown(drop.ends_at);
   const tier = nextTier(drop);
+  const best = bestTier(drop);
   const unitsToNextTier = tier ? tier.min_units - drop.total_ordered : 0;
+  const unitsToBestTier = best ? Math.max(0, best.min_units - drop.total_ordered) : 0;
+  const bestTierReached = best ? drop.total_ordered >= best.min_units : false;
   const progressPct = tier
     ? Math.min(100, (drop.total_ordered / tier.min_units) * 100)
     : 100;
@@ -169,7 +177,7 @@ export function DropView({
 
           {dropUrl && (
             <div className="mt-6 flex justify-center">
-              <WhatsAppShareButton dropTitle={drop.title} url={dropUrl} />
+              <ShareButtons dropTitle={drop.title} url={dropUrl} />
             </div>
           )}
 
@@ -192,14 +200,14 @@ export function DropView({
           </div>
           {dropUrl && (
             <div className="hidden shrink-0 sm:block">
-              <WhatsAppShareButton dropTitle={drop.title} url={dropUrl} />
+              <ShareButtons dropTitle={drop.title} url={dropUrl} />
             </div>
           )}
         </div>
 
         {dropUrl && (
           <div className="mt-4 sm:hidden">
-            <WhatsAppShareButton dropTitle={drop.title} url={dropUrl} />
+            <ShareButtons dropTitle={drop.title} url={dropUrl} />
           </div>
         )}
 
@@ -234,23 +242,50 @@ export function DropView({
                 ? "Beendet"
                 : `${String(countdown.h).padStart(2, "0")}:${String(countdown.m).padStart(2, "0")}:${String(countdown.s).padStart(2, "0")}`}
             </div>
-
-            {tier && (
-              <div className="mt-6">
-                <div className="flex justify-between text-sm text-zinc-600">
-                  <span>Nächste Stufe: {tier.price.toFixed(2)} €</span>
-                  <span>noch {unitsToNextTier} Einheiten</span>
-                </div>
-                <div className="mt-2 h-2 rounded-full border border-black bg-white">
-                  <div
-                    className="h-full rounded-full bg-yellow-400 transition-all"
-                    style={{ width: `${progressPct}%` }}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </div>
+
+        {tier && (
+          <div className="mt-6 rounded-lg border-4 border-black bg-yellow-400 p-6">
+            <div className="text-sm font-bold uppercase tracking-wide text-black/70">
+              Nächste Preisstufe
+            </div>
+            <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
+              <div className="text-5xl font-black tabular-nums">{tier.price.toFixed(2)} €</div>
+              <div className="text-right">
+                <div className="text-3xl font-black tabular-nums">{unitsToNextTier}</div>
+                <div className="text-sm font-bold">Einheiten fehlen noch</div>
+              </div>
+            </div>
+            <div className="mt-4 h-3 rounded-full border-2 border-black bg-white">
+              <div
+                className="h-full rounded-full bg-black transition-all"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+
+            {best && !bestTierReached && best.price !== tier.price && (
+              <p className="mt-4 text-sm font-semibold text-black/80">
+                Bestpreis {best.price.toFixed(2)} € ab {best.min_units} Einheiten insgesamt
+                {unitsToBestTier > 0 && ` (noch ${unitsToBestTier} fehlen)`}.
+              </p>
+            )}
+            {best && bestTierReached && (
+              <p className="mt-4 text-sm font-semibold text-black/80">
+                Bestpreis von {best.price.toFixed(2)} € ist erreicht!
+              </p>
+            )}
+          </div>
+        )}
+
+        {!tier && best && (
+          <div className="mt-6 rounded-lg border-4 border-black bg-yellow-400 p-6 text-center">
+            <div className="text-sm font-bold uppercase tracking-wide text-black/70">
+              Bestpreis erreicht
+            </div>
+            <div className="mt-2 text-5xl font-black tabular-nums">{best.price.toFixed(2)} €</div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-10 rounded-lg border-2 border-black p-6">
           <h2 className="text-lg font-bold">Jetzt dabei sein</h2>
