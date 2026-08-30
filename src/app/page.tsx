@@ -6,26 +6,23 @@ export const revalidate = 0;
 
 export default async function Home() {
   let list: Drop[] = [];
-  let dbg = "";
 
   try {
     const supabase = await createClient();
-    const { data: drops, error } = await supabase
+    const { data: drops } = await supabase
       .from("drops")
       .select("*")
       .in("status", ["active", "upcoming"])
       .order("starts_at", { ascending: true });
-    dbg = `url=${process.env.NEXT_PUBLIC_SUPABASE_URL ?? "MISSING"} err=${error ? JSON.stringify(error) : "none"} count=${drops?.length ?? "null"}`;
     list = (drops ?? []) as Drop[];
   } catch (err) {
-    dbg = `EXC: ${err instanceof Error ? err.message : JSON.stringify(err)}`;
+    console.error("Failed to load drops:", err);
   }
 
   return (
     <div className="min-h-screen bg-white text-black">
       <main className="mx-auto max-w-4xl px-6 py-12">
         <h1 className="mb-8 text-2xl font-bold">Aktuelle Drops</h1>
-        <p className="mb-4 text-xs text-zinc-400">DBG {dbg}</p>
 
         {list.length === 0 && (
           <p className="text-zinc-600">Aktuell kein aktiver Drop. Schau bald wieder vorbei.</p>
