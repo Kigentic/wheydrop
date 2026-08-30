@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function AdminLogin() {
@@ -50,6 +51,13 @@ export default function AdminLogin() {
         >
           Login
         </button>
+
+        <p className="mt-6 text-center text-sm text-zinc-600">
+          Admin-Konto?{" "}
+          <Link href="/account/login" className="font-semibold text-black hover:underline">
+            Mit Kundenkonto einloggen
+          </Link>
+        </p>
       </form>
     </div>
   );
