@@ -190,26 +190,13 @@ export function DropView({
   return (
     <div className="min-h-screen bg-white text-black">
       <main className="mx-auto max-w-4xl px-6 py-12">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
-              {drop.status === "active" ? "Live" : drop.status}
-            </span>
-            <h1 className="mt-2 text-3xl font-bold">{drop.title}</h1>
-            <p className="text-zinc-600">{drop.brand_name}</p>
-          </div>
-          {dropUrl && (
-            <div className="hidden shrink-0 sm:block">
-              <ShareButtons dropTitle={drop.title} url={dropUrl} />
-            </div>
-          )}
+        <div>
+          <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
+            {drop.status === "active" ? "Live" : drop.status}
+          </span>
+          <h1 className="mt-2 text-3xl font-bold">{drop.title}</h1>
+          <p className="text-zinc-600">{drop.brand_name}</p>
         </div>
-
-        {dropUrl && (
-          <div className="mt-4 sm:hidden">
-            <ShareButtons dropTitle={drop.title} url={dropUrl} />
-          </div>
-        )}
 
         {drop.image_urls.length > 0 && (
           <div className="mt-8">
@@ -284,6 +271,20 @@ export function DropView({
               Bestpreis erreicht
             </div>
             <div className="mt-2 text-5xl font-black tabular-nums">{best.price.toFixed(2)} €</div>
+          </div>
+        )}
+
+        {dropUrl && (
+          <div className="mt-6 rounded-lg border-2 border-black p-6 text-center">
+            <h2 className="text-lg font-bold">
+              Je mehr mitmachen, desto günstiger — sag's weiter!
+            </h2>
+            <p className="mt-1 text-sm text-zinc-600">
+              Schick den Link jetzt an Freunde und drückt gemeinsam den Preis.
+            </p>
+            <div className="mt-4 flex justify-center">
+              <ShareButtons dropTitle={drop.title} url={dropUrl} />
+            </div>
           </div>
         )}
 
