@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/SiteHeader";
 import type { Drop, Variant } from "@/lib/types";
 import { DropView } from "./DropView";
 
@@ -21,10 +20,5 @@ export default async function DropPage({
 
   if (!drop) notFound();
 
-  return (
-    <>
-      <SiteHeader />
-      <DropView drop={drop as Drop} initialVariants={(variants ?? []) as Variant[]} />
-    </>
-  );
+  return <DropView drop={drop as Drop} initialVariants={(variants ?? []) as Variant[]} />;
 }

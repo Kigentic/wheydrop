@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { StaticHeader } from "@/components/StaticHeader";
 import { PasswordInput } from "@/components/PasswordInput";
 
 export default function LoginPage() {
@@ -34,8 +33,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <StaticHeader />
-
       <main className="mx-auto flex max-w-sm flex-col px-6 py-16">
         <h1 className="text-2xl font-bold">Login</h1>
 

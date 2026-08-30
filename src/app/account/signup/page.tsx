@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { StaticHeader } from "@/components/StaticHeader";
 import { PasswordInput } from "@/components/PasswordInput";
 
 export default function SignupPage() {
@@ -47,7 +46,6 @@ export default function SignupPage() {
   if (checkEmail) {
     return (
       <div className="min-h-screen bg-white text-black">
-        <StaticHeader />
         <main className="mx-auto max-w-sm px-6 py-16 text-center">
           <h1 className="text-2xl font-bold">Fast geschafft</h1>
           <p className="mt-4 text-zinc-600">
@@ -61,8 +59,6 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <StaticHeader />
-
       <main className="mx-auto flex max-w-sm flex-col px-6 py-16">
         <h1 className="text-2xl font-bold">Konto erstellen</h1>
 

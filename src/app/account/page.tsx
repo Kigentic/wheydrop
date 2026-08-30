@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { SiteHeader } from "@/components/SiteHeader";
 import type { Drop, Order } from "@/lib/types";
 import { LogoutButton } from "./LogoutButton";
 
@@ -31,8 +30,6 @@ export default async function AccountPage() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <SiteHeader />
-
       <main className="mx-auto max-w-2xl px-6 py-12">
         <div className="flex items-start justify-between">
           <div>

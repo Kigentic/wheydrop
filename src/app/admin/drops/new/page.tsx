@@ -82,11 +82,8 @@ export default function NewDrop() {
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <header className="border-b-2 border-black px-6 py-5">
-        <span className="text-xl font-bold tracking-tight">Neuer Drop</span>
-      </header>
-
       <main className="mx-auto max-w-2xl px-6 py-12">
+        <h1 className="mb-6 text-2xl font-bold">Neuer Drop</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">

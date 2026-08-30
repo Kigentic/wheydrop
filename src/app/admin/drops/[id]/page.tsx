@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Drop, Order, Variant } from "@/lib/types";
@@ -27,14 +28,12 @@ export default async function AdminDropDetail({
 
   return (
     <div className="min-h-screen bg-white text-black">
-      <header className="border-b-2 border-black px-6 py-5">
-        <a href="/admin/dashboard" className="text-xl font-bold tracking-tight">
-          Admin
-        </a>
-      </header>
-
       <main className="mx-auto max-w-4xl px-6 py-12">
-        <div className="flex items-start justify-between">
+        <Link href="/admin/dashboard" className="text-sm font-semibold hover:underline">
+          ← Alle Drops
+        </Link>
+
+        <div className="mt-3 flex items-start justify-between">
           <div>
             <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
               {typedDrop.status}
