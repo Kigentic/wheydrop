@@ -77,7 +77,7 @@ export function DropView({
     return () => clearTimeout(timeout);
   }, [result, router]);
 
-  const countdown = useCountdown(drop.ends_at);
+  const countdown = useCountdown(drop.status === "upcoming" ? drop.starts_at : drop.ends_at);
   const tier = nextTier(drop);
   const best = bestTier(drop);
   const unitsToNextTier = tier ? tier.min_units - drop.total_ordered : 0;
@@ -221,12 +221,16 @@ export function DropView({
           </div>
 
           <div className="rounded-lg border-2 border-black p-6">
-            <div className="text-sm text-zinc-600">Drop endet in</div>
+            <div className="text-sm text-zinc-600">
+              {drop.status === "upcoming" ? "Drop startet in" : "Drop endet in"}
+            </div>
             <div className="mt-1 text-4xl font-bold tabular-nums">
               {!countdown.ready
                 ? "--:--:--"
                 : countdown.done
-                ? "Beendet"
+                ? drop.status === "upcoming"
+                  ? "Startet gleich"
+                  : "Beendet"
                 : `${String(countdown.h).padStart(2, "0")}:${String(countdown.m).padStart(2, "0")}:${String(countdown.s).padStart(2, "0")}`}
             </div>
           </div>

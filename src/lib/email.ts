@@ -87,6 +87,37 @@ export function reminderStartEmailHtml(name: string, dropTitle: string, dropUrl:
   `);
 }
 
+export function orderConfirmationEmailHtml(
+  name: string,
+  dropTitle: string,
+  flavor: string,
+  quantity: number,
+  authorizedAmount: number,
+  dropUrl: string
+) {
+  return layout(`
+    <span style="display:inline-block; background:#FFD600; padding:4px 10px; font-size:11px; font-weight:800; text-transform:uppercase; border-radius:4px;">Bestellung bestätigt</span>
+    <h1 style="font-size:20px; margin:16px 0 12px;">Hi ${escapeHtml(name)}, danke für deine Bestellung!</h1>
+    <p style="font-size:15px; color:#333; line-height:1.5;">
+      Du bist dabei bei <strong>${escapeHtml(dropTitle)}</strong>.
+    </p>
+    <table style="width:100%; font-size:14px; color:#333; border-collapse:collapse; margin:16px 0;">
+      <tr><td style="padding:6px 0; color:#999;">Sorte</td><td style="padding:6px 0; text-align:right;">${escapeHtml(flavor)}</td></tr>
+      <tr><td style="padding:6px 0; color:#999;">Menge</td><td style="padding:6px 0; text-align:right;">${quantity}</td></tr>
+      <tr><td style="padding:6px 0; color:#999; border-top:1px solid #eee;">Vorläufiger Höchstpreis</td><td style="padding:6px 0; text-align:right; border-top:1px solid #eee; font-weight:700;">${authorizedAmount.toFixed(2)} €</td></tr>
+    </table>
+    <p style="font-size:13px; color:#666; line-height:1.5;">
+      Das ist der maximale Preis. Je mehr Leute mitmachen, desto günstiger wird's für alle —
+      am Ende zahlst du nur den tatsächlich erreichten Bestpreis.
+    </p>
+    <div style="margin:24px 0;">
+      <a href="${dropUrl}" style="display:inline-block; background:#000; color:#FFD600; font-weight:700; text-decoration:none; padding:14px 28px; border-radius:999px;">
+        Drop verfolgen
+      </a>
+    </div>
+  `);
+}
+
 function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }

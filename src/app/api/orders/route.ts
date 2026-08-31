@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendEmail, orderConfirmationEmailHtml } from "@/lib/email";
 import type { Drop } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
@@ -56,6 +57,29 @@ export async function POST(req: NextRequest) {
 
   if (orderError) {
     return NextResponse.json({ error: orderError.message }, { status: 500 });
+  }
+
+  const { data: variant } = await supabase
+    .from("variants")
+    .select("flavor")
+    .eq("id", variant_id)
+    .single();
+
+  try {
+    await sendEmail({
+      to: customer_email,
+      subject: `Bestellung bestätigt: ${typedDrop.title}`,
+      html: orderConfirmationEmailHtml(
+        customer_name,
+        typedDrop.title,
+        variant?.flavor ?? "",
+        quantity,
+        authorized_amount,
+        `${req.nextUrl.origin}/drop/${drop_id}`
+      ),
+    });
+  } catch (err) {
+    console.error("Failed to send order confirmation email:", err);
   }
 
   return NextResponse.json({ order });
