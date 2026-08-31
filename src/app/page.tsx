@@ -26,12 +26,19 @@ export default async function Home() {
       <section className="relative overflow-hidden bg-black text-white">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/wheydrop_header.png"
+          src="/header_mobile.png"
           alt="Wheydrop Community"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 block h-full w-full object-cover sm:hidden"
           style={{ objectPosition: "center 15%" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/wheydrop_header.png"
+          alt="Wheydrop Community"
+          className="absolute inset-0 hidden h-full w-full object-cover sm:block"
+          style={{ objectPosition: "center 15%" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent sm:bg-gradient-to-r sm:from-black/90 sm:via-black/50 sm:to-transparent" />
 
         <div className="relative mx-auto max-w-6xl px-6 py-20 sm:py-28">
           <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">

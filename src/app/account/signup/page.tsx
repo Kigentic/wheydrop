@@ -46,79 +46,96 @@ export default function SignupPage() {
 
   if (checkEmail) {
     return (
-      <div className="min-h-screen bg-white text-black">
-        <main className="mx-auto max-w-sm px-6 py-16 text-center">
-          <h1 className="text-2xl font-bold">Fast geschafft</h1>
-          <p className="mt-4 text-zinc-600">
-            Wir haben dir eine Bestätigungs-E-Mail an <strong>{email}</strong> geschickt. Klick
-            auf den Link darin, um dein Konto zu aktivieren.
-          </p>
-        </main>
+      <div className="flex min-h-screen items-center justify-center bg-black px-6 py-16">
+        <div className="w-full max-w-sm text-center">
+          <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">
+            Fast geschafft
+          </span>
+          <div className="mt-8 rounded-2xl border-2 border-black bg-white p-8 shadow-[6px_6px_0_0_#FFD600]">
+            <h1 className="text-2xl font-black">Check dein Postfach</h1>
+            <p className="mt-4 text-sm text-zinc-600">
+              Wir haben dir eine Bestätigungs-E-Mail an <strong>{email}</strong> geschickt. Klick
+              auf den Link darin, um dein Konto zu aktivieren.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white text-black">
-      <main className="mx-auto flex max-w-sm flex-col px-6 py-16">
-        <h1 className="text-2xl font-bold">Konto erstellen</h1>
+    <div className="flex min-h-screen items-center justify-center bg-black px-6 py-16">
+      <div className="w-full max-w-sm">
+        <div className="text-center">
+          <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">
+            Community beitreten
+          </span>
+          <h1 className="mt-4 text-3xl font-black text-white">Konto erstellen</h1>
+          <p className="mt-2 text-sm text-zinc-400">
+            Bestpreise sichern, Bestellungen verfolgen — in 30 Sekunden dabei.
+          </p>
+        </div>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <label className="flex flex-col gap-1 text-sm">
-            Vorname
-            <input
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-              autoFocus
-              className="rounded border border-zinc-400 bg-white px-3 py-2"
-            />
-          </label>
+        <div className="mt-8 rounded-2xl border-2 border-black bg-white p-8 shadow-[6px_6px_0_0_#FFD600]">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <label className="flex flex-col gap-1 text-sm font-semibold">
+                Vorname
+                <input
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                  autoFocus
+                  className="rounded border border-zinc-300 bg-white px-3 py-2.5 font-normal outline-none focus:border-black"
+                />
+              </label>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Nachname
-            <input
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-              className="rounded border border-zinc-400 bg-white px-3 py-2"
-            />
-          </label>
+              <label className="flex flex-col gap-1 text-sm font-semibold">
+                Nachname
+                <input
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                  className="rounded border border-zinc-300 bg-white px-3 py-2.5 font-normal outline-none focus:border-black"
+                />
+              </label>
+            </div>
 
-          <label className="flex flex-col gap-1 text-sm">
-            E-Mail
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="rounded border border-zinc-400 bg-white px-3 py-2"
-            />
-          </label>
+            <label className="flex flex-col gap-1 text-sm font-semibold">
+              E-Mail
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="rounded border border-zinc-300 bg-white px-3 py-2.5 font-normal outline-none focus:border-black"
+              />
+            </label>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Passwort
-            <PasswordInput value={password} onChange={setPassword} required minLength={6} />
-          </label>
+            <label className="flex flex-col gap-1 text-sm font-semibold">
+              Passwort
+              <PasswordInput value={password} onChange={setPassword} required minLength={6} />
+            </label>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="text-sm text-red-600">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-full bg-black py-3 font-bold text-yellow-400 hover:bg-zinc-900 disabled:opacity-50"
-          >
-            {loading ? "Wird angelegt…" : "Konto erstellen"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full rounded-full bg-black py-3 font-bold text-yellow-400 transition hover:bg-zinc-900 disabled:opacity-50"
+            >
+              {loading ? "Wird angelegt…" : "Konto erstellen"}
+            </button>
+          </form>
+        </div>
 
-        <p className="mt-6 text-sm text-zinc-600">
+        <p className="mt-6 text-center text-sm text-zinc-400">
           Schon dabei?{" "}
-          <Link href="/account/login" className="font-semibold text-black hover:underline">
+          <Link href="/account/login" className="font-semibold text-yellow-400 hover:underline">
             Zum Login
           </Link>
         </p>
-      </main>
+      </div>
     </div>
   );
 }
