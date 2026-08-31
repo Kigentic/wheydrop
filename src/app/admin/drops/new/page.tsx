@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PriceCalculator from "./PriceCalculator";
 
 interface Tier {
   min_units: string;
@@ -136,6 +137,13 @@ export default function NewDrop() {
               <input value={flavors} onChange={(e) => setFlavors(e.target.value)} required className={inputClass} />
             </label>
           </div>
+
+          <PriceCalculator
+            onApply={(calculatedTiers, volume) => {
+              setTiers(calculatedTiers);
+              setMaxUnits(String(volume));
+            }}
+          />
 
           <div>
             <div className="flex items-center justify-between">
