@@ -55,7 +55,9 @@ export default async function AdminDashboard() {
                     {drop.total_ordered} / {drop.max_units}
                   </td>
                   <td className="px-4 py-3 tabular-nums">{drop.current_price.toFixed(2)} €</td>
-                  <td className="px-4 py-3">{new Date(drop.ends_at).toLocaleString("de-DE")}</td>
+                  <td className="px-4 py-3">
+                    {new Date(drop.ends_at).toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}
+                  </td>
                   <td className="px-4 py-3">
                     <Link href={`/admin/drops/${drop.id}`} className="font-semibold hover:underline">
                       Ansehen →

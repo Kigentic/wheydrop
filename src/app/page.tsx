@@ -206,6 +206,7 @@ export default async function Home() {
                       month: "2-digit",
                       hour: "2-digit",
                       minute: "2-digit",
+                      timeZone: "Europe/Berlin",
                     })}{" "}
                     Uhr
                   </span>

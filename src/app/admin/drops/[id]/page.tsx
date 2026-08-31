@@ -86,7 +86,9 @@ export default async function AdminDropDetail({
           </div>
           <div className="rounded-lg border-2 border-black p-4">
             <div className="text-xs text-zinc-600">Ende</div>
-            <div className="text-xl font-bold">{new Date(typedDrop.ends_at).toLocaleString("de-DE")}</div>
+            <div className="text-xl font-bold">
+              {new Date(typedDrop.ends_at).toLocaleString("de-DE", { timeZone: "Europe/Berlin" })}
+            </div>
           </div>
         </div>
 

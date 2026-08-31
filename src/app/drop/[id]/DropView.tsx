@@ -297,6 +297,7 @@ export function DropView({
                 {new Date(drop.starts_at).toLocaleString("de-DE", {
                   dateStyle: "long",
                   timeStyle: "short",
+                  timeZone: "Europe/Berlin",
                 })}
               </strong>
               . Schau dann wieder vorbei, um mitzumachen.
