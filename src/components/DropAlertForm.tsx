@@ -27,7 +27,7 @@ export function DropAlertForm({ dark = false }: { dark?: boolean }) {
   if (status === "ok") {
     return (
       <p className={`text-center font-semibold ${dark ? "text-yellow-400" : "text-black"}`}>
-        Danke! Du bekommst Bescheid, sobald der nächste Drop startet.
+        Fast geschafft! Check dein Postfach und bestätige deine Anmeldung.
       </p>
     );
   }
