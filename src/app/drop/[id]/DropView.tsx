@@ -54,7 +54,8 @@ export function DropView({
   const [selectedVariant, setSelectedVariant] = useState(initialVariants[0]?.id ?? "");
   const [quantity, setQuantity] = useState(1);
   const [form, setForm] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     street: "",
     zip: "",
@@ -93,7 +94,8 @@ export function DropView({
       if (!user) return;
       setForm((prev) => ({
         ...prev,
-        name: prev.name || (user.user_metadata?.name as string | undefined) || "",
+        firstName: prev.firstName || (user.user_metadata?.first_name as string | undefined) || "",
+        lastName: prev.lastName || (user.user_metadata?.last_name as string | undefined) || "",
         email: prev.email || user.email || "",
         street: prev.street || (user.user_metadata?.street as string | undefined) || "",
         zip: prev.zip || (user.user_metadata?.zip as string | undefined) || "",
@@ -146,7 +148,8 @@ export function DropView({
           drop_id: drop.id,
           variant_id: selectedVariant,
           quantity,
-          customer_name: form.name,
+          customer_first_name: form.firstName,
+          customer_last_name: form.lastName,
           customer_email: form.email,
           customer_address: {
             street: form.street,
@@ -355,11 +358,21 @@ export function DropView({
                 />
               </label>
 
-              <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-                Name <span className="text-red-600">*</span>
+              <label className="flex flex-col gap-1 text-sm">
+                Vorname <span className="text-red-600">*</span>
                 <input
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  value={form.firstName}
+                  onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                  required
+                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1 text-sm">
+                Nachname <span className="text-red-600">*</span>
+                <input
+                  value={form.lastName}
+                  onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                   required
                   className="rounded border border-zinc-400 bg-white px-3 py-2"
                 />

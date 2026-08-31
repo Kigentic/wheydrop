@@ -44,7 +44,8 @@ export interface Order {
   final_amount: number | null;
   stripe_payment_intent: string | null;
   status: OrderStatus;
-  customer_name: string;
+  customer_first_name: string;
+  customer_last_name: string;
   customer_email: string;
   customer_address: {
     street: string;

@@ -22,7 +22,8 @@ export async function GET(
   const variantMap = new Map(((variants ?? []) as Variant[]).map((v) => [v.id, v.flavor]));
 
   const header = [
-    "Name",
+    "Vorname",
+    "Nachname",
     "E-Mail",
     "Flavor",
     "Menge",
@@ -35,7 +36,8 @@ export async function GET(
   ];
 
   const rows = ((orders ?? []) as Order[]).map((o) => [
-    o.customer_name,
+    o.customer_first_name,
+    o.customer_last_name,
     o.customer_email,
     variantMap.get(o.variant_id) ?? "",
     String(o.quantity),

@@ -8,7 +8,8 @@ import { PasswordInput } from "@/components/PasswordInput";
 
 export default function SignupPage() {
   const router = useRouter();
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +25,7 @@ export default function SignupPage() {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: { data: { first_name: firstName, last_name: lastName } },
     });
 
     if (error) {
@@ -64,12 +65,22 @@ export default function SignupPage() {
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <label className="flex flex-col gap-1 text-sm">
-            Name
+            Vorname
             <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               required
               autoFocus
+              className="rounded border border-zinc-400 bg-white px-3 py-2"
+            />
+          </label>
+
+          <label className="flex flex-col gap-1 text-sm">
+            Nachname
+            <input
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
               className="rounded border border-zinc-400 bg-white px-3 py-2"
             />
           </label>

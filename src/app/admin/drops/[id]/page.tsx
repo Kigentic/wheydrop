@@ -173,7 +173,7 @@ export default async function AdminDropDetail({
               {orderList.map((o) => (
                 <tr key={o.id} className="border-t border-zinc-300">
                   <td className="px-4 py-3">
-                    <div>{o.customer_name}</div>
+                    <div>{o.customer_first_name} {o.customer_last_name}</div>
                     <div className="text-zinc-500">{o.customer_email}</div>
                   </td>
                   <td className="px-4 py-3">{variantMap.get(o.variant_id) ?? "–"}</td>

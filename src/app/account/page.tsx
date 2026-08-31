@@ -52,7 +52,12 @@ export default async function AccountPage() {
         </p>
         <ProfileForm
           initial={{
-            name: (user.user_metadata?.name as string | undefined) ?? "",
+            firstName:
+              (user.user_metadata?.first_name as string | undefined) ??
+              ((user.user_metadata?.name as string | undefined)?.split(" ")[0] || ""),
+            lastName:
+              (user.user_metadata?.last_name as string | undefined) ??
+              ((user.user_metadata?.name as string | undefined)?.split(" ").slice(1).join(" ") || ""),
             street: (user.user_metadata?.street as string | undefined) ?? "",
             zip: (user.user_metadata?.zip as string | undefined) ?? "",
             city: (user.user_metadata?.city as string | undefined) ?? "",

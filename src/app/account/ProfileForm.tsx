@@ -8,7 +8,8 @@ export function ProfileForm({
   initial,
 }: {
   initial: {
-    name: string;
+    firstName: string;
+    lastName: string;
     street: string;
     zip: string;
     city: string;
@@ -28,7 +29,16 @@ export function ProfileForm({
     setError(null);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.updateUser({ data: form });
+    const { error } = await supabase.auth.updateUser({
+      data: {
+        first_name: form.firstName,
+        last_name: form.lastName,
+        street: form.street,
+        zip: form.zip,
+        city: form.city,
+        country: form.country,
+      },
+    });
 
     if (error) {
       setError(error.message);
@@ -41,14 +51,25 @@ export function ProfileForm({
 
   return (
     <form onSubmit={handleSubmit} className="mt-3 space-y-4 rounded-lg border-2 border-black p-4">
-      <label className="flex flex-col gap-1 text-sm">
-        Name
-        <input
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="rounded border border-zinc-400 bg-white px-3 py-2"
-        />
-      </label>
+      <div className="grid grid-cols-2 gap-4">
+        <label className="flex flex-col gap-1 text-sm">
+          Vorname
+          <input
+            value={form.firstName}
+            onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+            className="rounded border border-zinc-400 bg-white px-3 py-2"
+          />
+        </label>
+
+        <label className="flex flex-col gap-1 text-sm">
+          Nachname
+          <input
+            value={form.lastName}
+            onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+            className="rounded border border-zinc-400 bg-white px-3 py-2"
+          />
+        </label>
+      </div>
 
       <label className="flex flex-col gap-1 text-sm">
         Straße + Hausnummer

@@ -6,9 +6,25 @@ import type { Drop } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { drop_id, variant_id, quantity, customer_name, customer_email, customer_address } = body;
+  const {
+    drop_id,
+    variant_id,
+    quantity,
+    customer_first_name,
+    customer_last_name,
+    customer_email,
+    customer_address,
+  } = body;
 
-  if (!drop_id || !variant_id || !quantity || !customer_name || !customer_email || !customer_address) {
+  if (
+    !drop_id ||
+    !variant_id ||
+    !quantity ||
+    !customer_first_name ||
+    !customer_last_name ||
+    !customer_email ||
+    !customer_address
+  ) {
     return NextResponse.json({ error: "missing fields" }, { status: 400 });
   }
 
@@ -48,7 +64,8 @@ export async function POST(req: NextRequest) {
       authorized_amount,
       status: "authorized",
       customer_id: user?.id ?? null,
-      customer_name,
+      customer_first_name,
+      customer_last_name,
       customer_email,
       customer_address,
     })
@@ -70,7 +87,7 @@ export async function POST(req: NextRequest) {
       to: customer_email,
       subject: `Bestellung bestätigt: ${typedDrop.title}`,
       html: orderConfirmationEmailHtml(
-        customer_name,
+        customer_first_name,
         typedDrop.title,
         variant?.flavor ?? "",
         quantity,
