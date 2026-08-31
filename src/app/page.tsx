@@ -64,6 +64,19 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* DROP ALARM (top) */}
+      <section className="border-b-2 border-black bg-white">
+        <div className="mx-auto max-w-2xl px-6 py-10 text-center">
+          <h2 className="text-xl font-black">Drop Alarm — keinen Drop mehr verpassen</h2>
+          <p className="mt-1 text-sm text-zinc-600">
+            Name + E-Mail rein, wir melden uns bei jedem neuen Drop.
+          </p>
+          <div className="mt-5">
+            <DropAlertForm />
+          </div>
+        </div>
+      </section>
+
       {/* TRUST BAR */}
       <section className="border-b-2 border-black bg-yellow-400">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-8 text-center sm:grid-cols-4">
@@ -72,12 +85,12 @@ export default async function Home() {
             <div className="text-xs font-bold uppercase tracking-wide">Community-powered</div>
           </div>
           <div>
-            <div className="text-3xl font-black">0€</div>
-            <div className="text-xs font-bold uppercase tracking-wide">Risiko bis Drop-Ende</div>
+            <div className="text-3xl font-black">Fair</div>
+            <div className="text-xs font-bold uppercase tracking-wide">Bestpreis automatisch für alle</div>
           </div>
           <div>
-            <div className="text-3xl font-black">Top</div>
-            <div className="text-xs font-bold uppercase tracking-wide">Marken, direkt ab Werk</div>
+            <div className="text-3xl font-black">Direkt</div>
+            <div className="text-xs font-bold uppercase tracking-wide">Vom Hersteller zu dir</div>
           </div>
           <div>
             <div className="text-3xl font-black">48h</div>
@@ -240,24 +253,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* FINAL CTA */}
-      <section className="bg-yellow-400">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h2 className="text-3xl font-black sm:text-4xl">Bereit, gemeinsam zu sparen?</h2>
-          <p className="mx-auto mt-3 max-w-lg text-black/70">
-            Schließ dich der Wheydrop-Community an und sichere dir den nächsten Drop, bevor er
-            endet.
-          </p>
-          <a
-            href="#drops"
-            className="mt-8 inline-block rounded-full bg-black px-8 py-4 text-base font-black text-yellow-400 transition hover:bg-zinc-900"
-          >
-            Zu den Drops
-          </a>
-        </div>
-      </section>
-
-      {/* DROP ALARM */}
+      {/* DROP ALARM (bottom) */}
       <section className="bg-black text-white">
         <div className="mx-auto max-w-2xl px-6 py-20 text-center">
           <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">
