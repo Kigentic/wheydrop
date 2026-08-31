@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { DropAlertForm } from "@/components/DropAlertForm";
 import type { Drop } from "@/lib/types";
 
 export const revalidate = 0;
@@ -108,10 +109,10 @@ export default async function Home() {
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black text-xl font-black text-yellow-400">
               2
             </div>
-            <h3 className="mt-4 text-lg font-bold">Preis fällt in Echtzeit</h3>
+            <h3 className="mt-4 text-lg font-bold">Preisstufen live erreichen</h3>
             <p className="mt-2 text-sm text-zinc-600">
-              Jede weitere Bestellung schiebt den Gesamtpreis für alle Teilnehmer runter —
-              live sichtbar, kein Warten auf Rabattcodes.
+              Sobald genug Bestellungen zusammenkommen, springt der Preis auf die nächste,
+              günstigere Stufe — live sichtbar, für alle gleichzeitig.
             </p>
           </div>
           <div className="rounded-lg border-2 border-black p-6">
@@ -167,8 +168,12 @@ export default async function Home() {
         </p>
 
         {list.length === 0 && (
-          <div className="mx-auto mt-12 max-w-md rounded-lg border-2 border-dashed border-zinc-300 p-10 text-center text-zinc-500">
-            Aktuell kein aktiver Drop. Schau bald wieder vorbei.
+          <div className="mx-auto mt-12 max-w-lg rounded-lg border-2 border-dashed border-zinc-300 p-10 text-center">
+            <p className="text-zinc-500">Aktuell kein aktiver Drop.</p>
+            <p className="mt-1 mb-6 font-semibold text-black">
+              Aktivier den Drop Alarm, dann verpasst du den nächsten nicht.
+            </p>
+            <DropAlertForm />
           </div>
         )}
 
@@ -190,9 +195,21 @@ export default async function Home() {
                 </div>
               )}
               <div className="p-6">
-                <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
-                  {drop.status === "active" ? "Live" : "Bald"}
-                </span>
+                {drop.status === "active" ? (
+                  <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
+                    Live
+                  </span>
+                ) : (
+                  <span className="inline-block border-2 border-black bg-yellow-400 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-black">
+                    Bald · {new Date(drop.starts_at).toLocaleString("de-DE", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
+                    Uhr
+                  </span>
+                )}
                 <h3 className="mt-2 text-xl font-bold">{drop.title}</h3>
                 <p className="text-zinc-600">{drop.brand_name}</p>
 
@@ -236,6 +253,24 @@ export default async function Home() {
           >
             Zu den Drops
           </a>
+        </div>
+      </section>
+
+      {/* DROP ALARM */}
+      <section className="bg-black text-white">
+        <div className="mx-auto max-w-2xl px-6 py-20 text-center">
+          <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">
+            Drop Alarm
+          </span>
+          <h2 className="mt-5 text-3xl font-black sm:text-4xl">
+            Keinen Drop mehr verpassen
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-zinc-300">
+            Trag dich ein und wir schicken dir eine Nachricht, sobald der nächste Drop startet.
+          </p>
+          <div className="mt-8">
+            <DropAlertForm dark />
+          </div>
         </div>
       </section>
 
