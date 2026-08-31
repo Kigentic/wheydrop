@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { marginForGross } from "@/lib/pricing";
 import type { Drop, Order, Variant } from "@/lib/types";
 import { CloseDropButton } from "./CloseDropButton";
 
@@ -23,7 +24,8 @@ export default async function AdminDropDetail({
   if (!drop) notFound();
 
   const typedDrop = drop as Drop;
-  const variantMap = new Map(((variants ?? []) as Variant[]).map((v) => [v.id, v.flavor]));
+  const variantList = (variants ?? []) as Variant[];
+  const variantMap = new Map(variantList.map((v) => [v.id, v.flavor]));
   const orderList = (orders ?? []) as Order[];
 
   return (
@@ -53,6 +55,24 @@ export default async function AdminDropDetail({
           </div>
         </div>
 
+        {typedDrop.image_urls.length > 0 && (
+          <div className="mt-6 grid grid-cols-4 gap-3">
+            {typedDrop.image_urls.map((url, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={i}
+                src={url}
+                alt={`${typedDrop.title} – Bild ${i + 1}`}
+                className="aspect-square rounded-lg border-2 border-black object-cover"
+              />
+            ))}
+          </div>
+        )}
+
+        {typedDrop.description && (
+          <p className="mt-6 max-w-2xl leading-relaxed text-zinc-700">{typedDrop.description}</p>
+        )}
+
         <div className="mt-6 grid grid-cols-3 gap-4">
           <div className="rounded-lg border-2 border-black p-4">
             <div className="text-xs text-zinc-600">Einheiten</div>
@@ -69,6 +89,70 @@ export default async function AdminDropDetail({
             <div className="text-xl font-bold">{new Date(typedDrop.ends_at).toLocaleString("de-DE")}</div>
           </div>
         </div>
+
+        <h2 className="mt-10 mb-3 text-lg font-bold">Flavors</h2>
+        <div className="overflow-x-auto rounded-lg border-2 border-black">
+          <table className="w-full text-sm">
+            <thead className="bg-yellow-400 text-left">
+              <tr>
+                <th className="px-4 py-3">Flavor</th>
+                <th className="px-4 py-3">Bestellt</th>
+                <th className="px-4 py-3">Verfügbares Kontingent</th>
+              </tr>
+            </thead>
+            <tbody>
+              {variantList.map((v) => (
+                <tr key={v.id} className="border-t border-zinc-300">
+                  <td className="px-4 py-3 font-medium">{v.flavor}</td>
+                  <td className="px-4 py-3 tabular-nums">{v.ordered_units}</td>
+                  <td className="px-4 py-3 tabular-nums">{v.available_units}</td>
+                </tr>
+              ))}
+              {variantList.length === 0 && (
+                <tr>
+                  <td colSpan={3} className="px-4 py-6 text-center text-zinc-500">
+                    Keine Flavors hinterlegt.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <h2 className="mt-10 mb-3 text-lg font-bold">Preisstufen</h2>
+        <div className="overflow-x-auto rounded-lg border-2 border-black">
+          <table className="w-full text-sm">
+            <thead className="bg-yellow-400 text-left">
+              <tr>
+                <th className="px-4 py-3">Einheiten</th>
+                <th className="px-4 py-3">Preis</th>
+                {typedDrop.purchase_price != null && <th className="px-4 py-3">Marge / Einheit</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {typedDrop.price_tiers.map((t, i) => (
+                <tr key={i} className="border-t border-zinc-300">
+                  <td className="px-4 py-3 tabular-nums">
+                    {t.min_units}
+                    {t.max_units != null ? ` – ${t.max_units}` : "+"}
+                  </td>
+                  <td className="px-4 py-3 tabular-nums">{t.price.toFixed(2)} €</td>
+                  {typedDrop.purchase_price != null && (
+                    <td className="px-4 py-3 tabular-nums text-green-700">
+                      {marginForGross(t.price, typedDrop.purchase_price).toFixed(2)} €
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {typedDrop.purchase_price != null && (
+          <p className="mt-2 text-xs text-zinc-500">
+            Einkaufspreis: {typedDrop.purchase_price.toFixed(2)} € · Marge inkl. MwSt. (19%) und Stripe-Gebühr
+            (1,5% + 0,25 €)
+          </p>
+        )}
 
         <h2 className="mt-10 mb-3 text-lg font-bold">Bestellungen ({orderList.length})</h2>
         <div className="overflow-x-auto rounded-lg border-2 border-black">

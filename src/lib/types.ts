@@ -20,6 +20,7 @@ export interface Drop {
   current_price: number;
   description: string;
   image_urls: string[];
+  purchase_price: number | null;
   created_at: string;
 }
 

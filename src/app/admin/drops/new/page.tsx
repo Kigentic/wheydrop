@@ -33,6 +33,7 @@ export default function NewDrop() {
   ]);
   const [description, setDescription] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [purchasePrice, setPurchasePrice] = useState<number | null>(null);
   const [tiers, setTiers] = useState<Tier[]>([
     { min_units: "0", max_units: "249", price: "32.90" },
     { min_units: "250", max_units: "499", price: "30.90" },
@@ -85,6 +86,7 @@ export default function NewDrop() {
         .map((r) => ({ flavor: r.flavor.trim(), available_units: Number(r.units) || 0 })),
       description,
       image_urls: imageUrls,
+      purchase_price: purchasePrice,
       price_tiers: tiers.map((t) => ({
         min_units: Number(t.min_units),
         max_units: t.max_units === "" ? null : Number(t.max_units),
@@ -118,12 +120,12 @@ export default function NewDrop() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Titel
+              Titel <span className="text-red-600">*</span>
               <input value={title} onChange={(e) => setTitle(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Brand
+              Brand <span className="text-red-600">*</span>
               <input value={brand} onChange={(e) => setBrand(e.target.value)} required className={inputClass} />
             </label>
 
@@ -142,17 +144,17 @@ export default function NewDrop() {
             </div>
 
             <label className="flex flex-col gap-1 text-sm">
-              Start
+              Start <span className="text-red-600">*</span>
               <input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm">
-              Ende
+              Ende <span className="text-red-600">*</span>
               <input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Max. Kontingent (gesamt, für Preisstufen)
+              Max. Kontingent (gesamt, für Preisstufen) <span className="text-red-600">*</span>
               <input type="number" value={maxUnits} onChange={(e) => setMaxUnits(e.target.value)} required className={inputClass} />
             </label>
           </div>
@@ -160,7 +162,7 @@ export default function NewDrop() {
           <div>
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold text-zinc-700">
-                Flavors &amp; Menge je Flavor
+                Flavors &amp; Menge je Flavor <span className="text-red-600">*</span>
               </h2>
               <button type="button" onClick={addFlavorRow} className="text-sm font-semibold hover:underline">
                 + Flavor
@@ -205,15 +207,18 @@ export default function NewDrop() {
           </div>
 
           <PriceCalculator
-            onApply={(calculatedTiers, volume) => {
+            onApply={(calculatedTiers, volume, purchase) => {
               setTiers(calculatedTiers);
               setMaxUnits(String(volume));
+              setPurchasePrice(purchase);
             }}
           />
 
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-zinc-700">Preisstufen</h2>
+              <h2 className="text-sm font-semibold text-zinc-700">
+                Preisstufen <span className="text-red-600">*</span>
+              </h2>
               <button type="button" onClick={addTier} className="text-sm font-semibold hover:underline">
                 + Stufe
               </button>
@@ -248,6 +253,10 @@ export default function NewDrop() {
               ))}
             </div>
           </div>
+
+          <p className="text-xs text-zinc-500">
+            <span className="text-red-600">*</span> Pflichtfeld
+          </p>
 
           {error && <p className="text-sm text-red-600">{error}</p>}
 

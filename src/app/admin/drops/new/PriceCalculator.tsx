@@ -67,7 +67,11 @@ function deNum(n: number) {
 export default function PriceCalculator({
   onApply,
 }: {
-  onApply: (tiers: { min_units: string; max_units: string; price: string }[], maxUnits: number) => void;
+  onApply: (
+    tiers: { min_units: string; max_units: string; price: string }[],
+    maxUnits: number,
+    purchasePrice: number
+  ) => void;
 }) {
   const [open, setOpen] = useState(true);
   const [purchase, setPurchase] = useState("20");
@@ -97,7 +101,7 @@ export default function PriceCalculator({
       max_units: i === tiers.length - 1 ? "" : String(t.maxUnits),
       price: t.gross.toFixed(2),
     }));
-    onApply(formTiers, v);
+    onApply(formTiers, v, s);
   }
 
   return (

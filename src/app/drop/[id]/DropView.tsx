@@ -288,111 +288,142 @@ export function DropView({
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-10 rounded-lg border-2 border-black p-6">
-          <h2 className="text-lg font-bold">Jetzt dabei sein</h2>
-
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            <label className="flex flex-col gap-1 text-sm">
-              Flavor
-              <select
-                value={selectedVariant}
-                onChange={(e) => setSelectedVariant(e.target.value)}
-                required
-                className="rounded border border-zinc-400 bg-white px-3 py-2"
-              >
-                {variants.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.flavor}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm">
-              Menge
-              <input
-                type="number"
-                min={1}
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
-                required
-                className="rounded border border-zinc-400 bg-white px-3 py-2"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Name
-              <input
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                required
-                className="rounded border border-zinc-400 bg-white px-3 py-2"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              E-Mail
-              <input
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                required
-                className="rounded border border-zinc-400 bg-white px-3 py-2"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Straße + Hausnummer
-              <input
-                value={form.street}
-                onChange={(e) => setForm({ ...form, street: e.target.value })}
-                required
-                className="rounded border border-zinc-400 bg-white px-3 py-2"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm">
-              PLZ
-              <input
-                value={form.zip}
-                onChange={(e) => setForm({ ...form, zip: e.target.value })}
-                required
-                className="rounded border border-zinc-400 bg-white px-3 py-2"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm">
-              Stadt
-              <input
-                value={form.city}
-                onChange={(e) => setForm({ ...form, city: e.target.value })}
-                required
-                className="rounded border border-zinc-400 bg-white px-3 py-2"
-              />
-            </label>
-          </div>
-
-          <div className="mt-6 flex items-center justify-between">
-            <div className="text-sm text-zinc-600">
-              Autorisiert wird der Maximalpreis: <strong>{maxAmount.toFixed(2)} €</strong>.
-              Belastet wird nur der tatsächlich erreichte Endpreis.
-            </div>
-          </div>
-
-          {result === "error" && (
-            <p className="mt-4 text-sm text-red-600">
-              Etwas ist schiefgelaufen. Bitte nochmal versuchen.
+        {drop.status === "upcoming" && (
+          <div className="mt-10 rounded-lg border-2 border-black bg-zinc-50 p-6 text-center">
+            <h2 className="text-lg font-bold">Noch nicht gestartet</h2>
+            <p className="mt-2 text-sm text-zinc-600">
+              Dieser Drop startet am{" "}
+              <strong>
+                {new Date(drop.starts_at).toLocaleString("de-DE", {
+                  dateStyle: "long",
+                  timeStyle: "short",
+                })}
+              </strong>
+              . Schau dann wieder vorbei, um mitzumachen.
             </p>
-          )}
+          </div>
+        )}
 
-          <button
-            type="submit"
-            disabled={submitting || countdown.done}
-            className="mt-6 w-full rounded-full bg-black py-3 font-bold text-yellow-400 transition hover:bg-zinc-900 disabled:opacity-50"
-          >
-            {countdown.done ? "Drop beendet" : submitting ? "Wird verarbeitet…" : "Jetzt dabei sein"}
-          </button>
-        </form>
+        {drop.status === "closed" && (
+          <div className="mt-10 rounded-lg border-2 border-black bg-zinc-50 p-6 text-center">
+            <h2 className="text-lg font-bold">Drop beendet</h2>
+            <p className="mt-2 text-sm text-zinc-600">
+              Dieser Drop ist abgeschlossen. Bestellungen sind nicht mehr möglich.
+            </p>
+          </div>
+        )}
+
+        {drop.status === "active" && (
+          <form onSubmit={handleSubmit} className="mt-10 rounded-lg border-2 border-black p-6">
+            <h2 className="text-lg font-bold">Jetzt dabei sein</h2>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <label className="flex flex-col gap-1 text-sm">
+                Flavor <span className="text-red-600">*</span>
+                <select
+                  value={selectedVariant}
+                  onChange={(e) => setSelectedVariant(e.target.value)}
+                  required
+                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                >
+                  {variants.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.flavor}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="flex flex-col gap-1 text-sm">
+                Menge <span className="text-red-600">*</span>
+                <input
+                  type="number"
+                  min={1}
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+                  required
+                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1 text-sm sm:col-span-2">
+                Name <span className="text-red-600">*</span>
+                <input
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  required
+                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1 text-sm sm:col-span-2">
+                E-Mail <span className="text-red-600">*</span>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  required
+                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1 text-sm sm:col-span-2">
+                Straße + Hausnummer <span className="text-red-600">*</span>
+                <input
+                  value={form.street}
+                  onChange={(e) => setForm({ ...form, street: e.target.value })}
+                  required
+                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1 text-sm">
+                PLZ <span className="text-red-600">*</span>
+                <input
+                  value={form.zip}
+                  onChange={(e) => setForm({ ...form, zip: e.target.value })}
+                  required
+                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                />
+              </label>
+
+              <label className="flex flex-col gap-1 text-sm">
+                Stadt <span className="text-red-600">*</span>
+                <input
+                  value={form.city}
+                  onChange={(e) => setForm({ ...form, city: e.target.value })}
+                  required
+                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                />
+              </label>
+            </div>
+
+            <p className="mt-3 text-xs text-zinc-500">
+              <span className="text-red-600">*</span> Pflichtfeld
+            </p>
+
+            <div className="mt-4 flex items-center justify-between">
+              <div className="text-sm text-zinc-600">
+                Autorisiert wird der Maximalpreis: <strong>{maxAmount.toFixed(2)} €</strong>.
+                Belastet wird nur der tatsächlich erreichte Endpreis.
+              </div>
+            </div>
+
+            {result === "error" && (
+              <p className="mt-4 text-sm text-red-600">
+                Etwas ist schiefgelaufen. Bitte nochmal versuchen.
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting || countdown.done}
+              className="mt-6 w-full rounded-full bg-black py-3 font-bold text-yellow-400 transition hover:bg-zinc-900 disabled:opacity-50"
+            >
+              {countdown.done ? "Drop beendet" : submitting ? "Wird verarbeitet…" : "Jetzt dabei sein"}
+            </button>
+          </form>
+        )}
       </main>
     </div>
   );
