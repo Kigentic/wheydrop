@@ -65,14 +65,20 @@ export default async function Home() {
       </section>
 
       {/* DROP ALARM (top) */}
-      <section className="border-b-2 border-black bg-white">
-        <div className="mx-auto max-w-2xl px-6 py-10 text-center">
-          <h2 className="text-xl font-black">Drop Alarm — keinen Drop mehr verpassen</h2>
-          <p className="mt-1 text-sm text-zinc-600">
-            Name + E-Mail rein, wir melden uns bei jedem neuen Drop.
+      <section className="border-b-2 border-black bg-black text-white">
+        <div className="mx-auto max-w-2xl px-6 py-14 text-center">
+          <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">
+            Verpass keinen Drop
+          </span>
+          <h2 className="mt-5 text-2xl font-black sm:text-3xl">
+            Sichere dir den <span className="text-yellow-400">Bestpreis</span> — bevor er weg ist
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-zinc-300">
+            Drop Alarm aktivieren und als Erster erfahren, wenn ein neuer Drop startet.
+            Kostenlos, jederzeit abbestellbar.
           </p>
-          <div className="mt-5">
-            <DropAlertForm />
+          <div className="mt-7">
+            <DropAlertForm dark />
           </div>
         </div>
       </section>
