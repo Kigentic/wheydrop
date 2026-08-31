@@ -64,25 +64,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* DROP ALARM (top) */}
-      <section className="border-b-2 border-black bg-black text-white">
-        <div className="mx-auto max-w-2xl px-6 py-14 text-center">
-          <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">
-            Verpass keinen Drop
-          </span>
-          <h2 className="mt-5 text-2xl font-black sm:text-3xl">
-            Sichere dir den <span className="text-yellow-400">Bestpreis</span> — bevor er weg ist
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-zinc-300">
-            Drop Alarm aktivieren und als Erster erfahren, wenn ein neuer Drop startet.
-            Kostenlos, jederzeit abbestellbar.
-          </p>
-          <div className="mt-7">
-            <DropAlertForm dark />
-          </div>
-        </div>
-      </section>
-
       {/* TRUST BAR */}
       <section className="border-b-2 border-black bg-yellow-400">
         <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-6 py-8 text-center sm:grid-cols-4">
@@ -101,6 +82,25 @@ export default async function Home() {
           <div>
             <div className="text-3xl font-black">48h</div>
             <div className="text-xs font-bold uppercase tracking-wide">Pro Drop, dann vorbei</div>
+          </div>
+        </div>
+      </section>
+
+      {/* DROP ALARM (top) */}
+      <section className="border-b-2 border-black bg-black text-white">
+        <div className="mx-auto max-w-2xl px-6 py-14 text-center">
+          <span className="inline-block bg-yellow-400 px-3 py-1 text-xs font-black uppercase tracking-widest text-black">
+            Verpass keinen Drop
+          </span>
+          <h2 className="mt-5 text-2xl font-black sm:text-3xl">
+            Sichere dir den <span className="text-yellow-400">Bestpreis</span> — bevor er weg ist
+          </h2>
+          <p className="mx-auto mt-3 max-w-md text-zinc-300">
+            Drop Alarm aktivieren und als Erster erfahren, wenn ein neuer Drop startet.
+            Kostenlos, jederzeit abbestellbar.
+          </p>
+          <div className="mt-7">
+            <DropAlertForm dark />
           </div>
         </div>
       </section>
