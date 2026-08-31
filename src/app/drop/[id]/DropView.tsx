@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Drop, Variant } from "@/lib/types";
 import { Gallery } from "./Gallery";
 import { ShareButtons } from "@/components/ShareButtons";
+import { VAT, SHIPPING_FLAT } from "@/lib/pricing";
 
 function nextTier(drop: Drop) {
   const sorted = [...drop.price_tiers].sort((a, b) => a.min_units - b.min_units);
@@ -62,6 +63,8 @@ export function DropView({
     city: "",
     country: "Deutschland",
   });
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [acceptWithdrawal, setAcceptWithdrawal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<"idle" | "ok" | "error">("idle");
   const [dropUrl, setDropUrl] = useState("");
@@ -130,10 +133,11 @@ export function DropView({
     };
   }, [drop.id]);
 
-  const maxAmount = useMemo(
-    () => (drop.price_tiers[0]?.price ?? drop.current_price) * quantity,
-    [drop, quantity]
-  );
+  const unitPrice = drop.price_tiers[0]?.price ?? drop.current_price;
+  const subtotal = useMemo(() => unitPrice * quantity, [unitPrice, quantity]);
+  const vatAmount = useMemo(() => subtotal - subtotal / (1 + VAT), [subtotal]);
+  const maxAmount = useMemo(() => subtotal + SHIPPING_FLAT, [subtotal]);
+  const selectedFlavor = variants.find((v) => v.id === selectedVariant)?.flavor ?? "";
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -157,6 +161,8 @@ export function DropView({
             city: form.city,
             country: form.country,
           },
+          accept_terms: acceptTerms,
+          accept_withdrawal: acceptWithdrawal,
         }),
       });
 
@@ -424,11 +430,70 @@ export function DropView({
               <span className="text-red-600">*</span> Pflichtfeld
             </p>
 
-            <div className="mt-4 flex items-center justify-between">
-              <div className="text-sm text-zinc-600">
-                Autorisiert wird der Maximalpreis: <strong>{maxAmount.toFixed(2)} €</strong>.
-                Belastet wird nur der tatsächlich erreichte Endpreis.
+            <div className="mt-6 rounded-lg border border-zinc-300 bg-zinc-50 p-4">
+              <h3 className="text-sm font-bold uppercase tracking-wide text-zinc-500">
+                Bestellübersicht
+              </h3>
+
+              <div className="mt-3 flex items-center justify-between text-sm">
+                <div>
+                  {selectedFlavor || "Artikel"} × {quantity}
+                  <div className="text-zinc-500">{unitPrice.toFixed(2)} € / Stück (Maximalpreis)</div>
+                </div>
+                <div className="font-semibold tabular-nums">{subtotal.toFixed(2)} €</div>
               </div>
+
+              <div className="mt-2 flex items-center justify-between text-sm">
+                <div>Versandpauschale</div>
+                <div className="font-semibold tabular-nums">{SHIPPING_FLAT.toFixed(2)} €</div>
+              </div>
+
+              <div className="mt-3 flex items-center justify-between border-t border-zinc-300 pt-3 text-base">
+                <div className="font-bold">Autorisierter Höchstbetrag</div>
+                <div className="font-bold tabular-nums">{maxAmount.toFixed(2)} €</div>
+              </div>
+
+              <div className="mt-1 text-xs text-zinc-500">
+                Enthält {vatAmount.toFixed(2)} € USt. (19 %). Zzgl. {SHIPPING_FLAT.toFixed(2)} € Versand bereits eingerechnet.
+              </div>
+
+              <p className="mt-3 text-xs text-zinc-600">
+                Das ist der maximale Betrag, den wir autorisieren. Belastet wird am Ende nur
+                der tatsächlich erreichte, niedrigere Bestpreis zzgl. Versand.
+              </p>
+            </div>
+
+            <div className="mt-4 space-y-2">
+              <label className="flex items-start gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={acceptTerms}
+                  onChange={(e) => setAcceptTerms(e.target.checked)}
+                  required
+                  className="mt-0.5"
+                />
+                <span>
+                  Ich akzeptiere die <a href="/agb" target="_blank" className="underline">AGB</a>.{" "}
+                  <span className="text-red-600">*</span>
+                </span>
+              </label>
+
+              <label className="flex items-start gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={acceptWithdrawal}
+                  onChange={(e) => setAcceptWithdrawal(e.target.checked)}
+                  required
+                  className="mt-0.5"
+                />
+                <span>
+                  Ich habe die{" "}
+                  <a href="/widerrufsrecht" target="_blank" className="underline">
+                    Widerrufsbelehrung
+                  </a>{" "}
+                  zur Kenntnis genommen. <span className="text-red-600">*</span>
+                </span>
+              </label>
             </div>
 
             {result === "error" && (
@@ -442,8 +507,15 @@ export function DropView({
               disabled={submitting || countdown.done}
               className="mt-6 w-full rounded-full bg-black py-3 font-bold text-yellow-400 transition hover:bg-zinc-900 disabled:opacity-50"
             >
-              {countdown.done ? "Drop beendet" : submitting ? "Wird verarbeitet…" : "Jetzt dabei sein"}
+              {countdown.done
+                ? "Drop beendet"
+                : submitting
+                ? "Wird verarbeitet…"
+                : "Verbindlich zum aktuellen Preis bestellen"}
             </button>
+            <p className="mt-2 text-center text-xs text-zinc-500">
+              Am Ende wird der letzte erreichte Preis berechnet.
+            </p>
           </form>
         )}
       </main>

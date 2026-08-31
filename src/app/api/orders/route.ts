@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail, orderConfirmationEmailHtml } from "@/lib/email";
+import { SHIPPING_FLAT } from "@/lib/pricing";
 import type { Drop } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
@@ -14,6 +15,8 @@ export async function POST(req: NextRequest) {
     customer_last_name,
     customer_email,
     customer_address,
+    accept_terms,
+    accept_withdrawal,
   } = body;
 
   if (
@@ -26,6 +29,10 @@ export async function POST(req: NextRequest) {
     !customer_address
   ) {
     return NextResponse.json({ error: "missing fields" }, { status: 400 });
+  }
+
+  if (!accept_terms || !accept_withdrawal) {
+    return NextResponse.json({ error: "AGB und Widerrufsbelehrung müssen bestätigt werden" }, { status: 400 });
   }
 
   const sessionClient = await createClient();
@@ -53,7 +60,7 @@ export async function POST(req: NextRequest) {
   // TODO: Stripe PaymentIntent (authorize) here once keys are configured.
   // authorized_amount uses the worst-case (first/highest) tier price.
   const maxPrice = typedDrop.price_tiers[0]?.price ?? typedDrop.current_price;
-  const authorized_amount = maxPrice * quantity;
+  const authorized_amount = maxPrice * quantity + SHIPPING_FLAT;
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -91,6 +98,8 @@ export async function POST(req: NextRequest) {
         typedDrop.title,
         variant?.flavor ?? "",
         quantity,
+        maxPrice * quantity,
+        SHIPPING_FLAT,
         authorized_amount,
         `${req.nextUrl.origin}/drop/${drop_id}`
       ),

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { SHIPPING_FLAT } from "@/lib/pricing";
 import type { Drop, Order } from "@/lib/types";
 
 function priceForUnits(tiers: Drop["price_tiers"], units: number) {
@@ -44,7 +45,7 @@ export async function POST(
   for (const order of (orders ?? []) as Order[]) {
     await supabase
       .from("orders")
-      .update({ final_amount: finalPrice * order.quantity, status: "captured" })
+      .update({ final_amount: finalPrice * order.quantity + SHIPPING_FLAT, status: "captured" })
       .eq("id", order.id);
   }
 

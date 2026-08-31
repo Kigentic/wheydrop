@@ -92,6 +92,8 @@ export function orderConfirmationEmailHtml(
   dropTitle: string,
   flavor: string,
   quantity: number,
+  subtotal: number,
+  shipping: number,
   authorizedAmount: number,
   dropUrl: string
 ) {
@@ -104,11 +106,13 @@ export function orderConfirmationEmailHtml(
     <table style="width:100%; font-size:14px; color:#333; border-collapse:collapse; margin:16px 0;">
       <tr><td style="padding:6px 0; color:#999;">Sorte</td><td style="padding:6px 0; text-align:right;">${escapeHtml(flavor)}</td></tr>
       <tr><td style="padding:6px 0; color:#999;">Menge</td><td style="padding:6px 0; text-align:right;">${quantity}</td></tr>
-      <tr><td style="padding:6px 0; color:#999; border-top:1px solid #eee;">Vorläufiger Höchstpreis</td><td style="padding:6px 0; text-align:right; border-top:1px solid #eee; font-weight:700;">${authorizedAmount.toFixed(2)} €</td></tr>
+      <tr><td style="padding:6px 0; color:#999;">Zwischensumme (Maximalpreis)</td><td style="padding:6px 0; text-align:right;">${subtotal.toFixed(2)} €</td></tr>
+      <tr><td style="padding:6px 0; color:#999;">Versand</td><td style="padding:6px 0; text-align:right;">${shipping.toFixed(2)} €</td></tr>
+      <tr><td style="padding:6px 0; color:#999; border-top:1px solid #eee;">Autorisierter Höchstbetrag</td><td style="padding:6px 0; text-align:right; border-top:1px solid #eee; font-weight:700;">${authorizedAmount.toFixed(2)} €</td></tr>
     </table>
     <p style="font-size:13px; color:#666; line-height:1.5;">
-      Das ist der maximale Preis. Je mehr Leute mitmachen, desto günstiger wird's für alle —
-      am Ende zahlst du nur den tatsächlich erreichten Bestpreis.
+      Das ist der maximale Betrag inkl. Versand. Je mehr Leute mitmachen, desto günstiger wird's
+      für alle — am Ende zahlst du nur den tatsächlich erreichten Bestpreis zzgl. Versand.
     </p>
     <div style="margin:24px 0;">
       <a href="${dropUrl}" style="display:inline-block; background:#000; color:#FFD600; font-weight:700; text-decoration:none; padding:14px 28px; border-radius:999px;">
