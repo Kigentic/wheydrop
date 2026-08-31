@@ -35,10 +35,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: dropError.message }, { status: 500 });
   }
 
-  const variantRows = (flavors as string[]).map((flavor) => ({
+  const variantRows = (flavors as { flavor: string; available_units: number }[]).map((f) => ({
     drop_id: drop.id,
-    flavor,
-    available_units: max_units,
+    flavor: f.flavor,
+    available_units: f.available_units,
   }));
 
   const { error: variantError } = await supabase.from("variants").insert(variantRows);

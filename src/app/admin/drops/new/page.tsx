@@ -4,11 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PriceCalculator from "./PriceCalculator";
+import ImageUploader from "./ImageUploader";
 
 interface Tier {
   min_units: string;
   max_units: string;
   price: string;
+}
+
+interface FlavorRow {
+  flavor: string;
+  units: string;
 }
 
 const inputClass = "rounded border border-zinc-400 bg-white px-3 py-2";
@@ -20,9 +26,13 @@ export default function NewDrop() {
   const [startsAt, setStartsAt] = useState("");
   const [endsAt, setEndsAt] = useState("");
   const [maxUnits, setMaxUnits] = useState("5000");
-  const [flavors, setFlavors] = useState("Vanilla, Chocolate, Strawberry");
+  const [flavorRows, setFlavorRows] = useState<FlavorRow[]>([
+    { flavor: "Vanilla", units: "" },
+    { flavor: "Chocolate", units: "" },
+    { flavor: "Strawberry", units: "" },
+  ]);
   const [description, setDescription] = useState("");
-  const [imageUrls, setImageUrls] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [tiers, setTiers] = useState<Tier[]>([
     { min_units: "0", max_units: "249", price: "32.90" },
     { min_units: "250", max_units: "499", price: "30.90" },
@@ -45,6 +55,20 @@ export default function NewDrop() {
     setTiers((prev) => prev.filter((_, idx) => idx !== i));
   }
 
+  function updateFlavorRow(i: number, field: keyof FlavorRow, value: string) {
+    setFlavorRows((prev) => prev.map((r, idx) => (idx === i ? { ...r, [field]: value } : r)));
+  }
+
+  function addFlavorRow() {
+    setFlavorRows((prev) => [...prev, { flavor: "", units: "" }]);
+  }
+
+  function removeFlavorRow(i: number) {
+    setFlavorRows((prev) => prev.filter((_, idx) => idx !== i));
+  }
+
+  const flavorUnitsTotal = flavorRows.reduce((sum, r) => sum + (Number(r.units) || 0), 0);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
@@ -56,9 +80,11 @@ export default function NewDrop() {
       starts_at: new Date(startsAt).toISOString(),
       ends_at: new Date(endsAt).toISOString(),
       max_units: Number(maxUnits),
-      flavors: flavors.split(",").map((f) => f.trim()).filter(Boolean),
+      flavors: flavorRows
+        .filter((r) => r.flavor.trim())
+        .map((r) => ({ flavor: r.flavor.trim(), available_units: Number(r.units) || 0 })),
       description,
-      image_urls: imageUrls.split(",").map((u) => u.trim()).filter(Boolean),
+      image_urls: imageUrls,
       price_tiers: tiers.map((t) => ({
         min_units: Number(t.min_units),
         max_units: t.max_units === "" ? null : Number(t.max_units),
@@ -111,15 +137,9 @@ export default function NewDrop() {
               />
             </label>
 
-            <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Bild-URLs (Komma-getrennt, bis zu 4)
-              <input
-                value={imageUrls}
-                onChange={(e) => setImageUrls(e.target.value)}
-                placeholder="/products/1.svg, /products/2.svg, ..."
-                className={inputClass}
-              />
-            </label>
+            <div className="sm:col-span-2">
+              <ImageUploader urls={imageUrls} onChange={setImageUrls} />
+            </div>
 
             <label className="flex flex-col gap-1 text-sm">
               Start
@@ -131,15 +151,57 @@ export default function NewDrop() {
               <input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} required className={inputClass} />
             </label>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Max. Kontingent
+            <label className="flex flex-col gap-1 text-sm sm:col-span-2">
+              Max. Kontingent (gesamt, für Preisstufen)
               <input type="number" value={maxUnits} onChange={(e) => setMaxUnits(e.target.value)} required className={inputClass} />
             </label>
+          </div>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Flavors (Komma-getrennt)
-              <input value={flavors} onChange={(e) => setFlavors(e.target.value)} required className={inputClass} />
-            </label>
+          <div>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-zinc-700">
+                Flavors &amp; Menge je Flavor
+              </h2>
+              <button type="button" onClick={addFlavorRow} className="text-sm font-semibold hover:underline">
+                + Flavor
+              </button>
+            </div>
+            <div className="mt-2 space-y-2">
+              {flavorRows.map((row, i) => (
+                <div key={i} className="grid grid-cols-[2fr_1fr_auto] gap-2">
+                  <input
+                    placeholder="Flavor, z.B. Vanilla"
+                    value={row.flavor}
+                    onChange={(e) => updateFlavorRow(i, "flavor", e.target.value)}
+                    required
+                    className={`${inputClass} text-sm`}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Menge"
+                    value={row.units}
+                    onChange={(e) => updateFlavorRow(i, "units", e.target.value)}
+                    required
+                    min="0"
+                    className={`${inputClass} text-sm`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeFlavorRow(i)}
+                    className="text-zinc-500 hover:text-red-600"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-zinc-500">
+              Summe Flavors: {flavorUnitsTotal} {flavorUnitsTotal !== Number(maxUnits) && maxUnits && (
+                <span className="text-amber-600">
+                  (weicht vom Max. Kontingent {maxUnits} ab — das ist ok, wenn gewollt)
+                </span>
+              )}
+            </p>
           </div>
 
           <PriceCalculator
