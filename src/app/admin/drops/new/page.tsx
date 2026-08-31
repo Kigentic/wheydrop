@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PriceCalculator from "./PriceCalculator";
 
@@ -84,7 +85,10 @@ export default function NewDrop() {
   return (
     <div className="min-h-screen bg-white text-black">
       <main className="mx-auto max-w-2xl px-6 py-12">
-        <h1 className="mb-6 text-2xl font-bold">Neuer Drop</h1>
+        <Link href="/admin/dashboard" className="text-sm font-semibold hover:underline">
+          ← Alle Drops
+        </Link>
+        <h1 className="mb-6 mt-3 text-2xl font-bold">Neuer Drop</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
