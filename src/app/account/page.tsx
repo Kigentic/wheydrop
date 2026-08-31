@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Drop, Order } from "@/lib/types";
 import { LogoutButton } from "./LogoutButton";
+import { ProfileForm } from "./ProfileForm";
 
 export const revalidate = 0;
 
@@ -44,6 +45,20 @@ export default async function AccountPage() {
           </div>
           <LogoutButton />
         </div>
+
+        <h2 className="mt-10 mb-1 text-lg font-bold">Meine Daten</h2>
+        <p className="text-sm text-zinc-600">
+          Diese Angaben werden bei der nächsten Bestellung automatisch vorausgefüllt.
+        </p>
+        <ProfileForm
+          initial={{
+            name: (user.user_metadata?.name as string | undefined) ?? "",
+            street: (user.user_metadata?.street as string | undefined) ?? "",
+            zip: (user.user_metadata?.zip as string | undefined) ?? "",
+            city: (user.user_metadata?.city as string | undefined) ?? "",
+            country: (user.user_metadata?.country as string | undefined) ?? "Deutschland",
+          }}
+        />
 
         <h2 className="mt-10 mb-3 text-lg font-bold">Meine Bestellungen</h2>
 

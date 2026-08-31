@@ -95,6 +95,10 @@ export function DropView({
         ...prev,
         name: prev.name || (user.user_metadata?.name as string | undefined) || "",
         email: prev.email || user.email || "",
+        street: prev.street || (user.user_metadata?.street as string | undefined) || "",
+        zip: prev.zip || (user.user_metadata?.zip as string | undefined) || "",
+        city: prev.city || (user.user_metadata?.city as string | undefined) || "",
+        country: (user.user_metadata?.country as string | undefined) || prev.country,
       }));
     });
   }, []);
