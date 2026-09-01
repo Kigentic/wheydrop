@@ -283,11 +283,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      {/* FOOTER */}
-      <footer className="bg-black px-6 py-10 text-center text-sm text-zinc-400">
-        © {new Date().getFullYear()} Wheydrop. Alle Preise inkl. MwSt.
-      </footer>
     </div>
   );
 }
