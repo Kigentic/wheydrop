@@ -55,3 +55,26 @@ export interface Order {
   };
   created_at: string;
 }
+
+export type SupplierConfirmationStatus = "pending" | "confirmed" | "declined";
+
+export interface SupplierConfirmationFlavor {
+  flavor: string;
+  quantity: number;
+}
+
+export interface SupplierConfirmation {
+  id: string;
+  drop_id: string | null;
+  supplier_name: string;
+  supplier_email: string;
+  product_title: string;
+  flavors: SupplierConfirmationFlavor[];
+  unit_price: number;
+  delivery_note: string;
+  status: SupplierConfirmationStatus;
+  confirm_token: string;
+  confirmed_at: string | null;
+  confirmed_ip: string | null;
+  created_at: string;
+}

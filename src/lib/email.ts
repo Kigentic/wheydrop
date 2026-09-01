@@ -122,6 +122,57 @@ export function orderConfirmationEmailHtml(
   `);
 }
 
+export function supplierConfirmationRequestEmailHtml(
+  supplierName: string,
+  productTitle: string,
+  confirmUrl: string
+) {
+  return layout(`
+    <span style="display:inline-block; background:#FFD600; padding:4px 10px; font-size:11px; font-weight:800; text-transform:uppercase; border-radius:4px;">Mengen- und Preiszusage</span>
+    <h1 style="font-size:20px; margin:16px 0 12px;">Hallo ${escapeHtml(supplierName)},</h1>
+    <p style="font-size:15px; color:#333; line-height:1.5;">
+      bitte bestätigen Sie die Menge und den Preis für <strong>${escapeHtml(productTitle)}</strong>
+      über den folgenden Link. Details (Geschmacksrichtungen, Mengen, Preis, Lieferzeit sowie die
+      vertraglichen Bedingungen aus unserem Rahmenvertrag) finden Sie auf der verlinkten Seite.
+    </p>
+    <div style="margin:24px 0;">
+      <a href="${confirmUrl}" style="display:inline-block; background:#000; color:#FFD600; font-weight:700; text-decoration:none; padding:14px 28px; border-radius:999px;">
+        Zusage ansehen &amp; bestätigen
+      </a>
+    </div>
+    <p style="font-size:12px; color:#999;">
+      Mit Bestätigung erklären Sie sich mit den dort genannten Bedingungen verbindlich
+      einverstanden (Textform gem. § 126b BGB).
+    </p>
+  `);
+}
+
+export function supplierConfirmedEmailHtml(
+  supplierName: string,
+  productTitle: string,
+  flavors: { flavor: string; quantity: number }[],
+  unitPrice: number,
+  confirmedAt: string
+) {
+  const rows = flavors
+    .map(
+      (f) =>
+        `<tr><td style="padding:4px 0; color:#999;">${escapeHtml(f.flavor)}</td><td style="padding:4px 0; text-align:right;">${f.quantity}</td></tr>`
+    )
+    .join("");
+  return layout(`
+    <span style="display:inline-block; background:#FFD600; padding:4px 10px; font-size:11px; font-weight:800; text-transform:uppercase; border-radius:4px;">Zusage bestätigt</span>
+    <h1 style="font-size:20px; margin:16px 0 12px;">${escapeHtml(supplierName)} hat zugesagt</h1>
+    <p style="font-size:15px; color:#333; line-height:1.5;">
+      Für <strong>${escapeHtml(productTitle)}</strong> zum Preis von ${unitPrice.toFixed(2)} €/Einheit,
+      bestätigt am ${confirmedAt}.
+    </p>
+    <table style="width:100%; font-size:14px; color:#333; border-collapse:collapse; margin:16px 0;">
+      ${rows}
+    </table>
+  `);
+}
+
 function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }

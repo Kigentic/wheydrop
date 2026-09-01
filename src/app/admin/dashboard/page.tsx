@@ -21,6 +21,12 @@ export default async function AdminDashboard() {
           <h1 className="text-2xl font-bold">Alle Drops</h1>
           <div className="flex items-center gap-3">
             <Link
+              href="/admin/supplier-confirmations"
+              className="rounded-full border-2 border-black px-4 py-2 text-sm font-bold hover:bg-zinc-100"
+            >
+              Hersteller-Zusagen
+            </Link>
+            <Link
               href="/admin/drops/new"
               className="rounded-full bg-black px-4 py-2 text-sm font-bold text-yellow-400 hover:bg-zinc-900"
             >
