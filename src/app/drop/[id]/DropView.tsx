@@ -65,6 +65,7 @@ export function DropView({
   });
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [acceptWithdrawal, setAcceptWithdrawal] = useState(false);
+  const [acceptDropAlarm, setAcceptDropAlarm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<"idle" | "ok" | "error">("idle");
   const [dropUrl, setDropUrl] = useState("");
@@ -167,6 +168,15 @@ export function DropView({
       });
 
       if (!res.ok) throw new Error("failed");
+
+      if (acceptDropAlarm) {
+        fetch("/api/drop-alerts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: form.firstName, email: form.email }),
+        }).catch(() => {});
+      }
+
       setResult("ok");
     } catch {
       setResult("error");
@@ -494,7 +504,27 @@ export function DropView({
                   zur Kenntnis genommen. <span className="text-red-600">*</span>
                 </span>
               </label>
+
+              <label className="flex items-start gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={acceptDropAlarm}
+                  onChange={(e) => setAcceptDropAlarm(e.target.checked)}
+                  className="mt-0.5"
+                />
+                <span>
+                  Ja, ich will auch den Drop Alarm für die nächsten Drops aktivieren.
+                </span>
+              </label>
             </div>
+
+            <p className="mt-3 text-xs text-zinc-500">
+              Informationen zum Umgang mit deinen Daten findest du in unserer{" "}
+              <a href="/datenschutz" target="_blank" className="underline">
+                Datenschutzerklärung
+              </a>
+              .
+            </p>
 
             {result === "error" && (
               <p className="mt-4 text-sm text-red-600">
