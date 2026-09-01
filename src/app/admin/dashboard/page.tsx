@@ -36,6 +36,13 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
+        <div className="mt-3 rounded-lg border-2 border-yellow-400 bg-yellow-50 px-4 py-3 text-sm">
+          Link für Hersteller (Angebot einreichen):{" "}
+          <a href="/supplier-offer" target="_blank" className="font-semibold underline">
+            wheydrop.fitskins.de/supplier-offer
+          </a>
+        </div>
+
         <div className="mt-6 overflow-x-auto rounded-lg border-2 border-black">
           <table className="w-full text-sm">
             <thead className="bg-yellow-400 text-left">

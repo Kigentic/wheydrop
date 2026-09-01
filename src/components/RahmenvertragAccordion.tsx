@@ -47,10 +47,19 @@ export function RahmenvertragAccordion({ supplierName }: { supplierName?: string
             Wird die zugesagte Menge innerhalb des Drops von den Endkunden vollständig
             abgerufen, ist der Lieferant verpflichtet, die gesamte zugesagte Menge zum
             zugesagten Preis zu liefern — unabhängig davon, ob der Lieferant die Ware
-            zwischenzeitlich anderweitig hätte teurer verkaufen können. Eine nachträgliche
-            Reduzierung der zugesagten Menge oder Preiserhöhung nach Drop-Start ist
-            ausgeschlossen, es sei denn, beide Parteien vereinbaren dies ausdrücklich
-            schriftlich (z. B. bei höherer Gewalt gemäß § 6).
+            zwischenzeitlich anderweitig hätte teurer verkaufen können.
+          </p>
+          <p className="mt-1">
+            Diese Lieferpflicht besteht <strong>unabhängig vom Absatzerfolg des Drops und
+            ohne Mindestabnahmeschwelle</strong>: Wird die zugesagte Menge nicht
+            vollständig, sondern nur teilweise abgerufen — egal ob 5, 50 oder 500 von z. B.
+            1.000 zugesagten Einheiten —, ist der Lieferant verpflichtet, die tatsächlich
+            abgerufene (geringere) Menge zum zugesagten Preis zu liefern.
+          </p>
+          <p className="mt-1">
+            Eine nachträgliche Reduzierung der zugesagten Menge oder Preiserhöhung nach
+            Drop-Start ist ausgeschlossen, es sei denn, beide Parteien vereinbaren dies
+            ausdrücklich schriftlich (z. B. bei höherer Gewalt gemäß § 6).
           </p>
 
           <h3 className="mt-4 font-bold text-black">§ 3 Einzelbestellung je Drop</h3>
@@ -63,11 +72,18 @@ export function RahmenvertragAccordion({ supplierName }: { supplierName?: string
             Einzelbestellung verbindlicher Bestandteil dieses Vertrags.
           </p>
 
-          <h3 className="mt-4 font-bold text-black">§ 4 Lieferzeit und Lieferort</h3>
+          <h3 className="mt-4 font-bold text-black">§ 4 Fulfillment und Versandnachweis</h3>
           <p className="mt-1">
-            Der Lieferant liefert die vom Drop tatsächlich abgerufene Menge gemäß den in
-            der jeweiligen Einzelbestellung genannten Lieferbedingungen. Teillieferungen
-            sind nur nach vorheriger Zustimmung von Wheydrop zulässig.
+            Wheydrop selbst lagert und versendet keine Ware. Der Lieferant übernimmt das
+            Fulfillment direkt gegenüber den Endkunden: Nach Ende des jeweiligen Drops
+            übermittelt Wheydrop dem Lieferanten eine Bestellliste mit Name, Lieferadresse,
+            bestellter Geschmacksrichtung und Menge je Endkunde. Der Lieferant versendet
+            die Ware gemäß den in der jeweiligen Einzelbestellung genannten
+            Lieferbedingungen direkt an die dort genannten Endkunden und übermittelt
+            Wheydrop für jede Sendung einen Versandnachweis (z. B. Trackingnummer)
+            spätestens 2 Werktage nach Versand. Ohne fristgerechten Versandnachweis gilt
+            die betreffende Einheit im Verhältnis zu Wheydrop als nicht geliefert im Sinne
+            von § 5.
           </p>
 
           <h3 className="mt-4 font-bold text-black">§ 5 Vertragsstrafe bei Unterlieferung</h3>

@@ -47,7 +47,14 @@ für einen oder mehrere konkret vereinbarte Drops gemäß den Einzelbestellungen
    ist der Lieferant verpflichtet, die **gesamte zugesagte Menge zum zugesagten Preis** zu
    liefern — unabhängig davon, ob der Lieferant die Ware zwischenzeitlich anderweitig
    hätte teurer verkaufen können.
-4. Eine nachträgliche Reduzierung der zugesagten Menge oder Preiserhöhung nach
+4. Diese Lieferpflicht besteht **unabhängig vom Absatzerfolg des Drops und ohne
+   Mindestabnahmeschwelle**: Wird die zugesagte Menge nicht vollständig, sondern nur
+   teilweise abgerufen — unabhängig davon, ob 5, 50 oder 500 von z. B. 1.000 zugesagten
+   Einheiten bestellt wurden —, ist der Lieferant verpflichtet, die tatsächlich von
+   Endkunden abgerufene (geringere) Menge zum zugesagten Preis zu liefern. Ein
+   Nichterreichen der vollen zugesagten Menge entbindet den Lieferanten nicht von der
+   Lieferpflicht für die tatsächlich bestellte Menge.
+5. Eine nachträgliche Reduzierung der zugesagten Menge oder Preiserhöhung nach
    Drop-Start ist ausgeschlossen, es sei denn, beide Parteien vereinbaren dies
    ausdrücklich schriftlich (z. B. bei nachweislich höherer Gewalt gemäß § 6).
 
@@ -59,12 +66,18 @@ Höchstmenge, Einkaufspreis pro Einheit, geplanter Drop-Zeitraum, gewünschtes L
 Mit Bestätigung durch den Lieferanten gemäß § 2 Abs. 1 wird die Einzelbestellung
 verbindlicher Bestandteil dieses Vertrags.
 
-## § 4 Lieferzeit und Lieferort
+## § 4 Fulfillment und Versandnachweis
 
-Der Lieferant liefert die vom Drop tatsächlich abgerufene Menge spätestens
-**[X Werktage]** nach Drop-Ende an folgende Adresse: **[LIEFERADRESSE / Lager /
-Fulfillment-Dienstleister]**. Teillieferungen sind nur nach vorheriger Zustimmung von
-Wheydrop zulässig.
+1. Wheydrop selbst lagert und versendet keine Ware. Der Lieferant übernimmt das
+   **Fulfillment direkt gegenüber den Endkunden**.
+2. Nach Ende des jeweiligen Drops übermittelt Wheydrop dem Lieferanten eine Bestellliste
+   mit Name, Lieferadresse, bestellter Geschmacksrichtung und Menge je Endkunde.
+3. Der Lieferant versendet die Ware **spätestens [X Werktage]** nach Erhalt dieser
+   Bestellliste direkt an die dort genannten Endkunden.
+4. Der Lieferant übermittelt Wheydrop für jede Sendung einen **Versandnachweis**
+   (z. B. Trackingnummer/Sendungsnummer des Versanddienstleisters) spätestens
+   **2 Werktage** nach Versand. Ohne fristgerechten Versandnachweis gilt die betreffende
+   Einheit im Verhältnis zu Wheydrop als nicht geliefert im Sinne von § 5.
 
 ## § 5 Vertragsstrafe bei Unterlieferung
 

@@ -90,9 +90,16 @@ export default async function SupplierConfirmPage({
           </p>
           <p>
             Wird die zugesagte Menge von den Endkunden vollständig abgerufen, sind Sie
-            verpflichtet, die gesamte zugesagte Menge zum zugesagten Preis zu liefern. Bei
-            Unterlieferung gilt die im Liefervertrag/Rahmenvertrag vereinbarte
-            Vertragsstrafenregelung.
+            verpflichtet, die gesamte zugesagte Menge zum zugesagten Preis zu liefern. Diese
+            Lieferpflicht gilt unabhängig vom Absatzerfolg und ohne Mindestabnahmeschwelle:
+            Wird nur ein Teil der Menge abgerufen, liefern Sie die tatsächlich abgerufene
+            Menge zum zugesagten Preis. Bei Unterlieferung gilt die im
+            Liefervertrag/Rahmenvertrag vereinbarte Vertragsstrafenregelung.
+          </p>
+          <p>
+            Wheydrop selbst versendet keine Ware: Nach Drop-Ende erhalten Sie von uns eine
+            Bestellliste mit den Endkunden-Adressen und versenden die Ware direkt an die
+            Endkunden. Details (Fristen, Versandnachweis) siehe Rahmenvertrag unten.
           </p>
         </div>
 
