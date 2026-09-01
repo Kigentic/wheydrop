@@ -44,21 +44,27 @@ export async function POST(req: NextRequest) {
   const authorizedAmount = maxPrice * quantity + SHIPPING_FLAT;
   const amountCents = Math.round(authorizedAmount * 100);
 
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: amountCents,
-    currency: "eur",
-    capture_method: "manual",
-    automatic_payment_methods: { enabled: true, allow_redirects: "never" },
-    metadata: {
-      drop_id,
-      variant_id,
-      quantity: String(quantity),
-    },
-  });
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amountCents,
+      currency: "eur",
+      capture_method: "manual",
+      automatic_payment_methods: { enabled: true, allow_redirects: "never" },
+      metadata: {
+        drop_id,
+        variant_id,
+        quantity: String(quantity),
+      },
+    });
 
-  return NextResponse.json({
-    client_secret: paymentIntent.client_secret,
-    payment_intent_id: paymentIntent.id,
-    authorized_amount: authorizedAmount,
-  });
+    return NextResponse.json({
+      client_secret: paymentIntent.client_secret,
+      payment_intent_id: paymentIntent.id,
+      authorized_amount: authorizedAmount,
+    });
+  } catch (err) {
+    console.error("Failed to create Stripe PaymentIntent:", err);
+    const message = err instanceof Error ? err.message : "unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

@@ -63,7 +63,14 @@ export async function POST(req: NextRequest) {
   const maxPrice = typedDrop.price_tiers[0]?.price ?? typedDrop.current_price;
   const authorized_amount = maxPrice * quantity + SHIPPING_FLAT;
 
-  const paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
+  let paymentIntent;
+  try {
+    paymentIntent = await stripe.paymentIntents.retrieve(payment_intent_id);
+  } catch (err) {
+    console.error("Failed to retrieve Stripe PaymentIntent:", err);
+    const message = err instanceof Error ? err.message : "unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 
   if (
     paymentIntent.status !== "requires_capture" ||
