@@ -347,7 +347,7 @@ export function DropView({
 
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <label className="flex flex-col gap-1 text-sm">
-                Flavor <span className="text-red-600">*</span>
+                <span>Flavor <span className="text-red-600">*</span></span>
                 <select
                   value={selectedVariant}
                   onChange={(e) => setSelectedVariant(e.target.value)}
@@ -363,7 +363,7 @@ export function DropView({
               </label>
 
               <label className="flex flex-col gap-1 text-sm">
-                Menge <span className="text-red-600">*</span>
+                <span>Menge <span className="text-red-600">*</span></span>
                 <input
                   type="number"
                   min={1}
@@ -375,7 +375,7 @@ export function DropView({
               </label>
 
               <label className="flex flex-col gap-1 text-sm">
-                Vorname <span className="text-red-600">*</span>
+                <span>Vorname <span className="text-red-600">*</span></span>
                 <input
                   value={form.firstName}
                   onChange={(e) => setForm({ ...form, firstName: e.target.value })}
@@ -385,7 +385,7 @@ export function DropView({
               </label>
 
               <label className="flex flex-col gap-1 text-sm">
-                Nachname <span className="text-red-600">*</span>
+                <span>Nachname <span className="text-red-600">*</span></span>
                 <input
                   value={form.lastName}
                   onChange={(e) => setForm({ ...form, lastName: e.target.value })}
@@ -395,7 +395,7 @@ export function DropView({
               </label>
 
               <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-                E-Mail <span className="text-red-600">*</span>
+                <span>E-Mail <span className="text-red-600">*</span></span>
                 <input
                   type="email"
                   value={form.email}
@@ -406,7 +406,7 @@ export function DropView({
               </label>
 
               <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-                Straße + Hausnummer <span className="text-red-600">*</span>
+                <span>Straße + Hausnummer <span className="text-red-600">*</span></span>
                 <input
                   value={form.street}
                   onChange={(e) => setForm({ ...form, street: e.target.value })}
@@ -416,7 +416,7 @@ export function DropView({
               </label>
 
               <label className="flex flex-col gap-1 text-sm">
-                PLZ <span className="text-red-600">*</span>
+                <span>PLZ <span className="text-red-600">*</span></span>
                 <input
                   value={form.zip}
                   onChange={(e) => setForm({ ...form, zip: e.target.value })}
@@ -426,7 +426,7 @@ export function DropView({
               </label>
 
               <label className="flex flex-col gap-1 text-sm">
-                Stadt <span className="text-red-600">*</span>
+                <span>Stadt <span className="text-red-600">*</span></span>
                 <input
                   value={form.city}
                   onChange={(e) => setForm({ ...form, city: e.target.value })}

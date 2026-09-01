@@ -144,11 +144,6 @@ export function RahmenvertragAccordion({ supplierName }: { supplierName?: string
             Bochum. Sollten einzelne Bestimmungen unwirksam sein, bleibt die Wirksamkeit
             der übrigen Bestimmungen unberührt.
           </p>
-
-          <p className="mt-4 text-xs text-zinc-500">
-            Hinweis: Entwurf, kein Rechtsrat. Individuell abweichende Konditionen können
-            zwischen den Parteien gesondert vereinbart werden.
-          </p>
         </div>
       )}
     </div>

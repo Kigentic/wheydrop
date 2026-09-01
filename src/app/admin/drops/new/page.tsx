@@ -120,12 +120,12 @@ export default function NewDrop() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Titel <span className="text-red-600">*</span>
+              <span>Titel <span className="text-red-600">*</span></span>
               <input value={title} onChange={(e) => setTitle(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Brand <span className="text-red-600">*</span>
+              <span>Brand <span className="text-red-600">*</span></span>
               <input value={brand} onChange={(e) => setBrand(e.target.value)} required className={inputClass} />
             </label>
 
@@ -144,17 +144,17 @@ export default function NewDrop() {
             </div>
 
             <label className="flex flex-col gap-1 text-sm">
-              Start <span className="text-red-600">*</span>
+              <span>Start <span className="text-red-600">*</span></span>
               <input type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm">
-              Ende <span className="text-red-600">*</span>
+              <span>Ende <span className="text-red-600">*</span></span>
               <input type="datetime-local" value={endsAt} onChange={(e) => setEndsAt(e.target.value)} required className={inputClass} />
             </label>
 
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
-              Max. Kontingent (gesamt, für Preisstufen) <span className="text-red-600">*</span>
+              <span>Max. Kontingent (gesamt, für Preisstufen) <span className="text-red-600">*</span></span>
               <input type="number" value={maxUnits} onChange={(e) => setMaxUnits(e.target.value)} required className={inputClass} />
             </label>
           </div>
@@ -217,7 +217,7 @@ export default function NewDrop() {
           <div>
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold text-zinc-700">
-                Preisstufen <span className="text-red-600">*</span>
+                <span>Preisstufen <span className="text-red-600">*</span></span>
               </h2>
               <button type="button" onClick={addTier} className="text-sm font-semibold hover:underline">
                 + Stufe

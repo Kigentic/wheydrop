@@ -80,7 +80,7 @@ export function SupplierOfferForm() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm">
-          Firma <span className="text-red-600">*</span>
+          <span>Firma <span className="text-red-600">*</span></span>
           <input
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
@@ -90,7 +90,7 @@ export function SupplierOfferForm() {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          Ansprechpartner <span className="text-red-600">*</span>
+          <span>Ansprechpartner <span className="text-red-600">*</span></span>
           <input
             value={contactName}
             onChange={(e) => setContactName(e.target.value)}
@@ -100,7 +100,7 @@ export function SupplierOfferForm() {
         </label>
 
         <label className="flex flex-col gap-1 text-sm">
-          E-Mail <span className="text-red-600">*</span>
+          <span>E-Mail <span className="text-red-600">*</span></span>
           <input
             type="email"
             value={email}
@@ -121,7 +121,7 @@ export function SupplierOfferForm() {
       </div>
 
       <label className="flex flex-col gap-1 text-sm">
-        Produktbezeichnung <span className="text-red-600">*</span>
+        <span>Produktbezeichnung <span className="text-red-600">*</span></span>
         <input
           value={productTitle}
           onChange={(e) => setProductTitle(e.target.value)}
@@ -174,8 +174,7 @@ export function SupplierOfferForm() {
       </div>
 
       <label className="flex flex-col gap-1 text-sm">
-        Euer verbindlicher niedrigster Preis pro Einheit (in €){" "}
-        <span className="text-red-600">*</span>
+        <span>Euer verbindlicher niedrigster Preis pro Einheit (in €) <span className="text-red-600">*</span></span>
         <input
           type="number"
           min={0}
@@ -188,7 +187,7 @@ export function SupplierOfferForm() {
       </label>
 
       <label className="flex flex-col gap-1 text-sm">
-        Lieferzeit / Lieferbedingungen <span className="text-red-600">*</span>
+        <span>Lieferzeit / Lieferbedingungen <span className="text-red-600">*</span></span>
         <textarea
           value={deliveryNote}
           onChange={(e) => setDeliveryNote(e.target.value)}
