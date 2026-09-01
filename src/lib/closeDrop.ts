@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import { stripe } from "@/lib/stripe";
 import { SHIPPING_FLAT } from "@/lib/pricing";
 import type { Drop, Order } from "@/lib/types";
 
@@ -36,11 +37,23 @@ export async function closeDrop(dropId: string) {
     throw new Error(ordersError.message);
   }
 
-  // TODO: Stripe capture per order at finalPrice * quantity once Stripe is wired up.
   for (const order of (orders ?? []) as Order[]) {
+    const finalAmount = finalPrice * order.quantity + SHIPPING_FLAT;
+
+    if (order.stripe_payment_intent) {
+      try {
+        await stripe.paymentIntents.capture(order.stripe_payment_intent, {
+          amount_to_capture: Math.round(finalAmount * 100),
+        });
+      } catch (err) {
+        console.error(`Failed to capture payment for order ${order.id}:`, err);
+        continue; // leave this order as "authorized" for manual follow-up
+      }
+    }
+
     await supabase
       .from("orders")
-      .update({ final_amount: finalPrice * order.quantity + SHIPPING_FLAT, status: "captured" })
+      .update({ final_amount: finalAmount, status: "captured" })
       .eq("id", order.id);
   }
 

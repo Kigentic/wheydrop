@@ -1,0 +1,64 @@
+import { NextRequest, NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { stripe } from "@/lib/stripe";
+import { SHIPPING_FLAT } from "@/lib/pricing";
+import type { Drop } from "@/lib/types";
+
+export async function POST(req: NextRequest) {
+  const body = await req.json();
+  const { drop_id, variant_id, quantity } = body;
+
+  if (!drop_id || !variant_id || !quantity || quantity < 1) {
+    return NextResponse.json({ error: "missing fields" }, { status: 400 });
+  }
+
+  const supabase = createAdminClient();
+
+  const { data: drop, error: dropError } = await supabase
+    .from("drops")
+    .select("*")
+    .eq("id", drop_id)
+    .single();
+
+  if (dropError || !drop) {
+    return NextResponse.json({ error: "drop not found" }, { status: 404 });
+  }
+
+  const typedDrop = drop as Drop;
+  if (typedDrop.status !== "active" || Date.parse(typedDrop.ends_at) < Date.now()) {
+    return NextResponse.json({ error: "drop not active" }, { status: 400 });
+  }
+
+  const { data: variant, error: variantError } = await supabase
+    .from("variants")
+    .select("id")
+    .eq("id", variant_id)
+    .eq("drop_id", drop_id)
+    .single();
+
+  if (variantError || !variant) {
+    return NextResponse.json({ error: "variant not found" }, { status: 404 });
+  }
+
+  const maxPrice = typedDrop.price_tiers[0]?.price ?? typedDrop.current_price;
+  const authorizedAmount = maxPrice * quantity + SHIPPING_FLAT;
+  const amountCents = Math.round(authorizedAmount * 100);
+
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amountCents,
+    currency: "eur",
+    capture_method: "manual",
+    automatic_payment_methods: { enabled: true, allow_redirects: "never" },
+    metadata: {
+      drop_id,
+      variant_id,
+      quantity: String(quantity),
+    },
+  });
+
+  return NextResponse.json({
+    client_secret: paymentIntent.client_secret,
+    payment_intent_id: paymentIntent.id,
+    authorized_amount: authorizedAmount,
+  });
+}

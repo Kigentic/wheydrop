@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import type { Drop, Variant } from "@/lib/types";
 import { Gallery } from "./Gallery";
 import { ShareButtons } from "@/components/ShareButtons";
+import { StripePaymentStep } from "./StripePaymentStep";
 import { VAT, SHIPPING_FLAT } from "@/lib/pricing";
 
 function nextTier(drop: Drop) {
@@ -69,6 +70,8 @@ export function DropView({
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<"idle" | "ok" | "error">("idle");
   const [dropUrl, setDropUrl] = useState("");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   useEffect(() => {
     setDropUrl(window.location.href);
@@ -140,8 +143,39 @@ export function DropView({
   const maxAmount = useMemo(() => subtotal + SHIPPING_FLAT, [subtotal]);
   const selectedFlavor = variants.find((v) => v.id === selectedVariant)?.flavor ?? "";
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleProceedToPayment(e: React.FormEvent) {
     e.preventDefault();
+    if (!acceptTerms || !acceptWithdrawal) return;
+    setSubmitting(true);
+    setPaymentError(null);
+
+    try {
+      const res = await fetch("/api/orders/create-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          drop_id: drop.id,
+          variant_id: selectedVariant,
+          quantity,
+        }),
+      });
+
+      if (!res.ok) throw new Error("failed");
+      const data = await res.json();
+      setClientSecret(data.client_secret);
+    } catch {
+      setPaymentError("Zahlung konnte nicht vorbereitet werden. Bitte nochmal versuchen.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  function handleEditDetails() {
+    setClientSecret(null);
+    setPaymentError(null);
+  }
+
+  async function finalizeOrder(paymentIntentId: string) {
     setSubmitting(true);
     setResult("idle");
 
@@ -164,6 +198,7 @@ export function DropView({
           },
           accept_terms: acceptTerms,
           accept_withdrawal: acceptWithdrawal,
+          payment_intent_id: paymentIntentId,
         }),
       });
 
@@ -348,7 +383,7 @@ export function DropView({
         )}
 
         {drop.status === "active" && (
-          <form onSubmit={handleSubmit} className="mt-10 rounded-lg border-2 border-black p-6">
+          <form onSubmit={handleProceedToPayment} className="mt-10 rounded-lg border-2 border-black p-6">
             <h2 className="text-lg font-bold">Jetzt dabei sein</h2>
 
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -358,7 +393,8 @@ export function DropView({
                   value={selectedVariant}
                   onChange={(e) => setSelectedVariant(e.target.value)}
                   required
-                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                  disabled={clientSecret !== null}
+                  className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 >
                   {variants.map((v) => (
                     <option key={v.id} value={v.id}>
@@ -376,7 +412,8 @@ export function DropView({
                   value={quantity}
                   onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
                   required
-                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                  disabled={clientSecret !== null}
+                  className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 />
               </label>
 
@@ -386,7 +423,8 @@ export function DropView({
                   value={form.firstName}
                   onChange={(e) => setForm({ ...form, firstName: e.target.value })}
                   required
-                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                  disabled={clientSecret !== null}
+                  className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 />
               </label>
 
@@ -396,7 +434,8 @@ export function DropView({
                   value={form.lastName}
                   onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                   required
-                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                  disabled={clientSecret !== null}
+                  className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 />
               </label>
 
@@ -407,7 +446,8 @@ export function DropView({
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   required
-                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                  disabled={clientSecret !== null}
+                  className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 />
               </label>
 
@@ -417,7 +457,8 @@ export function DropView({
                   value={form.street}
                   onChange={(e) => setForm({ ...form, street: e.target.value })}
                   required
-                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                  disabled={clientSecret !== null}
+                  className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 />
               </label>
 
@@ -427,7 +468,8 @@ export function DropView({
                   value={form.zip}
                   onChange={(e) => setForm({ ...form, zip: e.target.value })}
                   required
-                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                  disabled={clientSecret !== null}
+                  className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 />
               </label>
 
@@ -437,7 +479,8 @@ export function DropView({
                   value={form.city}
                   onChange={(e) => setForm({ ...form, city: e.target.value })}
                   required
-                  className="rounded border border-zinc-400 bg-white px-3 py-2"
+                  disabled={clientSecret !== null}
+                  className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 />
               </label>
             </div>
@@ -538,20 +581,41 @@ export function DropView({
               </p>
             )}
 
-            <button
-              type="submit"
-              disabled={submitting || countdown.done}
-              className="mt-6 w-full rounded-full bg-black py-3 font-bold text-yellow-400 transition hover:bg-zinc-900 disabled:opacity-50"
-            >
-              {countdown.done
-                ? "Drop beendet"
-                : submitting
-                ? "Wird verarbeitet…"
-                : "Verbindlich zum aktuellen Preis bestellen"}
-            </button>
-            <p className="mt-2 text-center text-xs text-zinc-500">
-              Am Ende wird der letzte erreichte Preis berechnet.
-            </p>
+            {paymentError && <p className="mt-4 text-sm text-red-600">{paymentError}</p>}
+
+            {clientSecret === null ? (
+              <>
+                <button
+                  type="submit"
+                  disabled={submitting || countdown.done}
+                  className="mt-6 w-full rounded-full bg-black py-3 font-bold text-yellow-400 transition hover:bg-zinc-900 disabled:opacity-50"
+                >
+                  {countdown.done
+                    ? "Drop beendet"
+                    : submitting
+                    ? "Wird vorbereitet…"
+                    : "Weiter zur Zahlung"}
+                </button>
+                <p className="mt-2 text-center text-xs text-zinc-500">
+                  Am Ende wird der letzte erreichte Preis berechnet.
+                </p>
+              </>
+            ) : (
+              <>
+                <StripePaymentStep
+                  clientSecret={clientSecret}
+                  amountLabel={`${maxAmount.toFixed(2)} €`}
+                  onAuthorized={finalizeOrder}
+                />
+                <button
+                  type="button"
+                  onClick={handleEditDetails}
+                  className="mt-3 w-full text-center text-sm text-zinc-500 hover:underline"
+                >
+                  Angaben ändern
+                </button>
+              </>
+            )}
           </form>
         )}
       </main>
