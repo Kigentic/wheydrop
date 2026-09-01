@@ -3,6 +3,13 @@ export default function AgbPage() {
     <div className="min-h-screen bg-white text-black">
       <main className="mx-auto max-w-2xl px-6 py-16">
         <h1 className="text-2xl font-bold">Allgemeine Geschäftsbedingungen (B2C)</h1>
+        <p className="mt-2 text-sm text-zinc-500">
+          Bestellst du als Unternehmer? Es gelten unsere{" "}
+          <a href="/agb-b2b" className="underline">
+            AGB für Geschäftskunden
+          </a>
+          .
+        </p>
 
         <div className="mt-6 rounded-lg border-2 border-yellow-400 bg-yellow-50 p-4 text-sm text-zinc-700">
           <strong>Hinweis (nicht für Kunden sichtbar gedacht):</strong> Entwurf, an das
