@@ -100,7 +100,7 @@ export default async function Home() {
             Verpass keinen Drop
           </span>
           <h2 className="mt-5 text-2xl font-black sm:text-3xl">
-            Sichere dir den <span className="text-yellow-400">Bestpreis</span> — bevor er weg ist
+            Sichere dir den <span className="text-yellow-400">Bestpreis</span> — bevor er weg ist
           </h2>
           <p className="mx-auto mt-3 max-w-md text-zinc-300">
             Drop Alarm aktivieren und als Erster erfahren, wenn ein neuer Drop startet.
