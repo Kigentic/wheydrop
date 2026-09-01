@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmail, reminder24hEmailHtml, reminderStartEmailHtml } from "@/lib/email";
+import { closeDrop } from "@/lib/closeDrop";
 import type { Drop } from "@/lib/types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -24,12 +25,26 @@ export async function GET(req: NextRequest) {
 
   for (const drop of (drops ?? []) as Drop[]) {
     const startsAt = Date.parse(drop.starts_at);
+    const endsAt = Date.parse(drop.ends_at);
 
     // flip status once the start time has passed
     if (drop.status === "upcoming" && startsAt <= now) {
       await supabase.from("drops").update({ status: "active" }).eq("id", drop.id);
       drop.status = "active";
       results.push(`${drop.id}: status -> active`);
+    }
+
+    // auto-close once the 48h window has passed
+    if (drop.status === "active" && endsAt <= now) {
+      try {
+        const { final_price, orders_closed } = await closeDrop(drop.id);
+        results.push(
+          `${drop.id}: closed, final price ${final_price.toFixed(2)} €, ${orders_closed} orders captured`
+        );
+      } catch (err) {
+        results.push(`${drop.id}: close failed - ${err instanceof Error ? err.message : "unknown error"}`);
+      }
+      continue;
     }
 
     const dropUrl = `${origin}/drop/${drop.id}`;

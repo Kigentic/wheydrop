@@ -215,7 +215,13 @@ export function DropView({
       <main className="mx-auto max-w-4xl px-6 py-12">
         <div>
           <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
-            {drop.status === "active" ? "Live" : drop.status}
+            {drop.status === "active"
+              ? Date.parse(drop.ends_at) < Date.now()
+                ? "Beendet"
+                : "Live"
+              : drop.status === "upcoming"
+              ? "Bald"
+              : "Beendet"}
           </span>
           <h1 className="mt-2 text-3xl font-bold">{drop.title}</h1>
           <p className="text-zinc-600">{drop.brand_name}</p>

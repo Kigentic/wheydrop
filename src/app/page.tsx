@@ -221,7 +221,11 @@ export default async function Home() {
                 </div>
               )}
               <div className="p-6">
-                {drop.status === "active" ? (
+                {drop.status === "active" && Date.parse(drop.ends_at) < Date.now() ? (
+                  <span className="inline-block bg-zinc-300 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-zinc-700">
+                    Beendet
+                  </span>
+                ) : drop.status === "active" ? (
                   <span className="inline-block bg-black px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-yellow-400">
                     Live
                   </span>
