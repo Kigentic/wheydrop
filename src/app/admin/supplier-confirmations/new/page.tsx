@@ -65,8 +65,13 @@ export default function NewSupplierConfirmationPage() {
         </Link>
         <h1 className="mt-1 text-2xl font-bold">Neue Zusage anfragen</h1>
         <p className="mt-2 text-sm text-zinc-600">
-          Der Hersteller erhält einen Link, über den er Menge und Preis verbindlich bestätigt
-          (Grundlage: Liefervertrag/Rahmenvertrag).
+          Für bereits telefonisch/persönlich abgestimmte Konditionen: Der Hersteller erhält
+          direkt den Link zur finalen Bestätigung (Grundlage: Liefervertrag/Rahmenvertrag).
+          Reicht der Hersteller sein Angebot lieber selbst ein, nutzt er stattdessen{" "}
+          <a href="/supplier-offer" target="_blank" className="underline">
+            /supplier-offer
+          </a>
+          .
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">

@@ -56,7 +56,11 @@ export interface Order {
   created_at: string;
 }
 
-export type SupplierConfirmationStatus = "pending" | "confirmed" | "declined";
+export type SupplierConfirmationStatus =
+  | "submitted"
+  | "admin_approved"
+  | "confirmed"
+  | "declined";
 
 export interface SupplierConfirmationFlavor {
   flavor: string;
@@ -68,13 +72,19 @@ export interface SupplierConfirmation {
   drop_id: string | null;
   supplier_name: string;
   supplier_email: string;
+  contact_name: string | null;
+  phone: string | null;
   product_title: string;
   flavors: SupplierConfirmationFlavor[];
   unit_price: number;
   delivery_note: string;
+  message: string | null;
   status: SupplierConfirmationStatus;
   confirm_token: string;
   confirmed_at: string | null;
   confirmed_ip: string | null;
+  decline_reason: string | null;
+  declined_by: "admin" | "supplier" | null;
+  reviewed_at: string | null;
   created_at: string;
 }

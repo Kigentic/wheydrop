@@ -1,21 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { sendEmail, supplierConfirmationRequestEmailHtml } from "@/lib/email";
+import { sendEmail, supplierOfferReceivedEmailHtml } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const {
     supplier_name,
+    contact_name,
     supplier_email,
+    phone,
     product_title,
     flavors,
     unit_price,
     delivery_note,
-    drop_id,
+    message,
   } = body;
 
   if (
     !supplier_name ||
+    !contact_name ||
     !supplier_email ||
     !product_title ||
     !Array.isArray(flavors) ||
@@ -32,14 +35,15 @@ export async function POST(req: NextRequest) {
     .from("supplier_confirmations")
     .insert({
       supplier_name,
+      contact_name,
       supplier_email,
+      phone: phone || null,
       product_title,
       flavors,
       unit_price,
       delivery_note,
-      drop_id: drop_id || null,
-      status: "admin_approved",
-      reviewed_at: new Date().toISOString(),
+      message: message || null,
+      status: "submitted",
     })
     .select()
     .single();
@@ -48,16 +52,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const confirmUrl = `${req.nextUrl.origin}/supplier-confirm/${confirmation.confirm_token}`;
+  const reviewUrl = `${req.nextUrl.origin}/admin/supplier-confirmations/${confirmation.id}`;
 
   try {
     await sendEmail({
-      to: supplier_email,
-      subject: `Mengen- und Preiszusage: ${product_title}`,
-      html: supplierConfirmationRequestEmailHtml(supplier_name, product_title, confirmUrl),
+      to: "wheydrop@fitskins.de",
+      subject: `Neues Hersteller-Angebot: ${product_title}`,
+      html: supplierOfferReceivedEmailHtml(
+        supplier_name,
+        contact_name,
+        product_title,
+        flavors,
+        unit_price,
+        delivery_note,
+        message || "",
+        reviewUrl
+      ),
     });
   } catch (err) {
-    console.error("Failed to send supplier confirmation request email:", err);
+    console.error("Failed to send supplier offer notification:", err);
   }
 
   return NextResponse.json({ confirmation });

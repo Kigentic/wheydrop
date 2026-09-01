@@ -5,13 +5,15 @@ import type { SupplierConfirmation } from "@/lib/types";
 export const revalidate = 0;
 
 const statusLabel: Record<SupplierConfirmation["status"], string> = {
-  pending: "Ausstehend",
+  submitted: "Neu — prüfen",
+  admin_approved: "Freigegeben — wartet auf Hersteller",
   confirmed: "Bestätigt",
   declined: "Abgelehnt",
 };
 
 const statusClass: Record<SupplierConfirmation["status"], string> = {
-  pending: "bg-zinc-200 text-zinc-700",
+  submitted: "bg-yellow-200 text-yellow-900",
+  admin_approved: "bg-zinc-200 text-zinc-700",
   confirmed: "bg-green-200 text-green-800",
   declined: "bg-red-200 text-red-800",
 };
@@ -56,8 +58,12 @@ export default async function SupplierConfirmationsPage() {
             </thead>
             <tbody>
               {list.map((c) => (
-                <tr key={c.id} className="border-t border-zinc-300">
-                  <td className="px-4 py-3 font-medium">{c.product_title}</td>
+                <tr key={c.id} className="border-t border-zinc-300 hover:bg-yellow-50">
+                  <td className="px-4 py-3 font-medium">
+                    <Link href={`/admin/supplier-confirmations/${c.id}`} className="hover:underline">
+                      {c.product_title}
+                    </Link>
+                  </td>
                   <td className="px-4 py-3">
                     {c.supplier_name}
                     <div className="text-zinc-500">{c.supplier_email}</div>

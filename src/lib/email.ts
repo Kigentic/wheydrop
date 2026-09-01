@@ -147,6 +147,55 @@ export function supplierConfirmationRequestEmailHtml(
   `);
 }
 
+export function supplierOfferReceivedEmailHtml(
+  companyName: string,
+  contactName: string,
+  productTitle: string,
+  flavors: { flavor: string; quantity: number }[],
+  unitPrice: number,
+  deliveryNote: string,
+  message: string,
+  reviewUrl: string
+) {
+  const rows = flavors
+    .map(
+      (f) =>
+        `<tr><td style="padding:4px 0; color:#999;">${escapeHtml(f.flavor)}</td><td style="padding:4px 0; text-align:right;">${f.quantity}</td></tr>`
+    )
+    .join("");
+  return layout(`
+    <span style="display:inline-block; background:#FFD600; padding:4px 10px; font-size:11px; font-weight:800; text-transform:uppercase; border-radius:4px;">Neues Hersteller-Angebot</span>
+    <h1 style="font-size:20px; margin:16px 0 12px;">${escapeHtml(companyName)} (${escapeHtml(contactName)})</h1>
+    <p style="font-size:15px; color:#333; line-height:1.5;">
+      <strong>${escapeHtml(productTitle)}</strong> zu ${unitPrice.toFixed(2)} €/Einheit.
+    </p>
+    <table style="width:100%; font-size:14px; color:#333; border-collapse:collapse; margin:16px 0;">
+      ${rows}
+    </table>
+    <p style="font-size:14px; color:#333;"><strong>Lieferbedingungen:</strong> ${escapeHtml(deliveryNote)}</p>
+    ${message ? `<p style="font-size:14px; color:#333;"><strong>Nachricht:</strong> ${escapeHtml(message)}</p>` : ""}
+    <div style="margin:24px 0;">
+      <a href="${reviewUrl}" style="display:inline-block; background:#000; color:#FFD600; font-weight:700; text-decoration:none; padding:14px 28px; border-radius:999px;">
+        Anfrage prüfen
+      </a>
+    </div>
+  `);
+}
+
+export function supplierOfferDeclinedEmailHtml(contactName: string, productTitle: string, reason: string) {
+  return layout(`
+    <h1 style="font-size:20px; margin:0 0 12px;">Hallo ${escapeHtml(contactName)},</h1>
+    <p style="font-size:15px; color:#333; line-height:1.5;">
+      vielen Dank für euer Angebot für <strong>${escapeHtml(productTitle)}</strong>. Leider
+      passt es aktuell nicht in unsere Planung.
+    </p>
+    ${reason ? `<p style="font-size:14px; color:#666;">${escapeHtml(reason)}</p>` : ""}
+    <p style="font-size:14px; color:#666;">
+      Gerne könnt ihr euch mit anderen Konditionen erneut melden.
+    </p>
+  `);
+}
+
 export function supplierConfirmedEmailHtml(
   supplierName: string,
   productTitle: string,

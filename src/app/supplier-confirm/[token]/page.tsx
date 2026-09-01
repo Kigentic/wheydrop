@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { SupplierConfirmation } from "@/lib/types";
+import { RahmenvertragAccordion } from "@/components/RahmenvertragAccordion";
 import { ConfirmActions } from "./ConfirmActions";
 
 export const revalidate = 0;
@@ -93,13 +94,22 @@ export default async function SupplierConfirmPage({
             Unterlieferung gilt die im Liefervertrag/Rahmenvertrag vereinbarte
             Vertragsstrafenregelung.
           </p>
-          <p className="text-xs text-zinc-500">
-            Vollständige Bedingungen: Liefervertrag/Rahmenvertrag zwischen Wheydrop und{" "}
-            {confirmation.supplier_name}.
-          </p>
         </div>
 
-        {confirmation.status === "pending" && <ConfirmActions token={token} />}
+        <div className="mt-4">
+          <RahmenvertragAccordion supplierName={confirmation.supplier_name} />
+        </div>
+
+        {confirmation.status === "submitted" && (
+          <div className="mt-8 rounded-lg border-2 border-black bg-zinc-50 p-6 text-center">
+            <p className="font-bold">Diese Anfrage wird noch geprüft.</p>
+            <p className="mt-1 text-sm text-zinc-600">
+              Wir melden uns, sobald wir sie freigegeben haben.
+            </p>
+          </div>
+        )}
+
+        {confirmation.status === "admin_approved" && <ConfirmActions token={token} />}
 
         {confirmation.status === "confirmed" && (
           <div className="mt-8 rounded-lg border-2 border-black bg-green-50 p-6 text-center">

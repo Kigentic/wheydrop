@@ -29,7 +29,7 @@ export async function POST(
 
   const confirmation = existing as SupplierConfirmation;
 
-  if (confirmation.status !== "pending") {
+  if (confirmation.status !== "admin_approved") {
     return NextResponse.json({ error: "already processed" }, { status: 400 });
   }
 
@@ -41,6 +41,7 @@ export async function POST(
       status: action === "confirm" ? "confirmed" : "declined",
       confirmed_at: new Date().toISOString(),
       confirmed_ip: ip,
+      declined_by: action === "decline" ? "supplier" : null,
     })
     .eq("id", confirmation.id)
     .select()
@@ -50,8 +51,8 @@ export async function POST(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  if (action === "confirm") {
-    try {
+  try {
+    if (action === "confirm") {
       await sendEmail({
         to: "wheydrop@fitskins.de",
         subject: `Zusage bestätigt: ${confirmation.product_title}`,
@@ -63,9 +64,15 @@ export async function POST(
           new Date().toLocaleString("de-DE", { timeZone: "Europe/Berlin" })
         ),
       });
-    } catch (err) {
-      console.error("Failed to send supplier-confirmed notification:", err);
+    } else {
+      await sendEmail({
+        to: "wheydrop@fitskins.de",
+        subject: `Hersteller hat abgelehnt: ${confirmation.product_title}`,
+        html: `<p>${confirmation.supplier_name} hat die finale Bestätigung für ${confirmation.product_title} abgelehnt.</p>`,
+      });
     }
+  } catch (err) {
+    console.error("Failed to send supplier-confirm notification:", err);
   }
 
   return NextResponse.json({ confirmation: updated });
