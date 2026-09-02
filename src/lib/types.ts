@@ -30,6 +30,7 @@ export interface Variant {
   id: string;
   drop_id: string;
   flavor: string;
+  brand: string | null;
   available_units: number;
   ordered_units: number;
 }

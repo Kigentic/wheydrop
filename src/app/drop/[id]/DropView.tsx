@@ -399,6 +399,7 @@ export function DropView({
                   {variants.map((v) => (
                     <option key={v.id} value={v.id}>
                       {v.flavor}
+                      {v.brand && v.brand !== drop.brand_name ? ` (${v.brand})` : ""}
                     </option>
                   ))}
                 </select>

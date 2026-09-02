@@ -36,9 +36,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: dropError.message }, { status: 500 });
   }
 
-  const variantRows = (flavors as { flavor: string; available_units: number }[]).map((f) => ({
+  const variantRows = (
+    flavors as { flavor: string; brand?: string; available_units: number }[]
+  ).map((f) => ({
     drop_id: drop.id,
     flavor: f.flavor,
+    brand: f.brand?.trim() || null,
     available_units: f.available_units,
   }));
 

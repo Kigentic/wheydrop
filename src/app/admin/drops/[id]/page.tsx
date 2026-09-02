@@ -98,6 +98,7 @@ export default async function AdminDropDetail({
             <thead className="bg-yellow-400 text-left">
               <tr>
                 <th className="px-4 py-3">Flavor</th>
+                <th className="px-4 py-3">Marke</th>
                 <th className="px-4 py-3">Bestellt</th>
                 <th className="px-4 py-3">Verfügbares Kontingent</th>
               </tr>
@@ -106,13 +107,14 @@ export default async function AdminDropDetail({
               {variantList.map((v) => (
                 <tr key={v.id} className="border-t border-zinc-300">
                   <td className="px-4 py-3 font-medium">{v.flavor}</td>
+                  <td className="px-4 py-3 text-zinc-600">{v.brand ?? typedDrop.brand_name}</td>
                   <td className="px-4 py-3 tabular-nums">{v.ordered_units}</td>
                   <td className="px-4 py-3 tabular-nums">{v.available_units}</td>
                 </tr>
               ))}
               {variantList.length === 0 && (
                 <tr>
-                  <td colSpan={3} className="px-4 py-6 text-center text-zinc-500">
+                  <td colSpan={4} className="px-4 py-6 text-center text-zinc-500">
                     Keine Flavors hinterlegt.
                   </td>
                 </tr>

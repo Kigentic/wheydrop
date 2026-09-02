@@ -14,6 +14,7 @@ interface Tier {
 
 interface FlavorRow {
   flavor: string;
+  brand: string;
   units: string;
 }
 
@@ -27,9 +28,9 @@ export default function NewDrop() {
   const [endsAt, setEndsAt] = useState("");
   const [maxUnits, setMaxUnits] = useState("5000");
   const [flavorRows, setFlavorRows] = useState<FlavorRow[]>([
-    { flavor: "Vanilla", units: "" },
-    { flavor: "Chocolate", units: "" },
-    { flavor: "Strawberry", units: "" },
+    { flavor: "Vanilla", brand: "", units: "" },
+    { flavor: "Chocolate", brand: "", units: "" },
+    { flavor: "Strawberry", brand: "", units: "" },
   ]);
   const [description, setDescription] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
@@ -61,7 +62,7 @@ export default function NewDrop() {
   }
 
   function addFlavorRow() {
-    setFlavorRows((prev) => [...prev, { flavor: "", units: "" }]);
+    setFlavorRows((prev) => [...prev, { flavor: "", brand: "", units: "" }]);
   }
 
   function removeFlavorRow(i: number) {
@@ -83,7 +84,11 @@ export default function NewDrop() {
       max_units: Number(maxUnits),
       flavors: flavorRows
         .filter((r) => r.flavor.trim())
-        .map((r) => ({ flavor: r.flavor.trim(), available_units: Number(r.units) || 0 })),
+        .map((r) => ({
+          flavor: r.flavor.trim(),
+          brand: r.brand.trim() || undefined,
+          available_units: Number(r.units) || 0,
+        })),
       description,
       image_urls: imageUrls,
       purchase_price: purchasePrice,
@@ -127,6 +132,10 @@ export default function NewDrop() {
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
               <span>Brand <span className="text-red-600">*</span></span>
               <input value={brand} onChange={(e) => setBrand(e.target.value)} required className={inputClass} />
+              <span className="text-xs font-normal text-zinc-500">
+                Haupt-/Anzeigemarke des Drops. Bei einem Multi-Brand-Drop unten je Flavor eine
+                abweichende Marke eintragen.
+              </span>
             </label>
 
             <label className="flex flex-col gap-1 text-sm sm:col-span-2">
@@ -162,20 +171,30 @@ export default function NewDrop() {
           <div>
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold text-zinc-700">
-                Flavors &amp; Menge je Flavor <span className="text-red-600">*</span>
+                Flavors, Marke &amp; Menge je Flavor <span className="text-red-600">*</span>
               </h2>
               <button type="button" onClick={addFlavorRow} className="text-sm font-semibold hover:underline">
                 + Flavor
               </button>
             </div>
+            <p className="mt-1 text-xs text-zinc-500">
+              Marke leer lassen, wenn sie der Haupt-Brand oben entspricht (Standardfall). Nur
+              bei einem Multi-Brand-Drop je Flavor eine abweichende Marke eintragen.
+            </p>
             <div className="mt-2 space-y-2">
               {flavorRows.map((row, i) => (
-                <div key={i} className="grid grid-cols-[2fr_1fr_auto] gap-2">
+                <div key={i} className="grid grid-cols-[1.5fr_1.5fr_1fr_auto] gap-2">
                   <input
                     placeholder="Flavor, z.B. Vanilla"
                     value={row.flavor}
                     onChange={(e) => updateFlavorRow(i, "flavor", e.target.value)}
                     required
+                    className={`${inputClass} text-sm`}
+                  />
+                  <input
+                    placeholder="Marke (optional)"
+                    value={row.brand}
+                    onChange={(e) => updateFlavorRow(i, "brand", e.target.value)}
                     className={`${inputClass} text-sm`}
                   />
                   <input
