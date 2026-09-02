@@ -194,18 +194,20 @@ export default async function Home() {
         </p>
 
         {list.length === 0 && (
-          <div className="mx-auto mt-12 max-w-lg rounded-lg border-2 border-black p-10 text-center">
+          <div className="mx-auto mt-12 max-w-2xl overflow-hidden rounded-lg border-2 border-black text-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/comingsoon.png"
               alt="Nächster Drop kommt bald"
-              className="mx-auto h-40 w-40 rounded-lg object-cover"
+              className="mx-auto block w-full max-w-sm"
             />
-            <p className="mt-6 text-zinc-500">Aktuell kein aktiver Drop.</p>
-            <p className="mt-1 mb-6 font-semibold text-black">
-              Aktivier den Drop Alarm, dann verpasst du den nächsten nicht.
-            </p>
-            <DropAlertForm />
+            <div className="p-8 sm:p-10">
+              <p className="text-zinc-500">Aktuell kein aktiver Drop.</p>
+              <p className="mt-1 mb-6 font-semibold text-black">
+                Aktivier den Drop Alarm, dann verpasst du den nächsten nicht.
+              </p>
+              <DropAlertForm />
+            </div>
           </div>
         )}
 

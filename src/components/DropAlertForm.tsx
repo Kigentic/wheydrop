@@ -44,7 +44,7 @@ export function DropAlertForm({ dark = false }: { dark?: boolean }) {
           onChange={(e) => setName(e.target.value)}
           placeholder="Dein Name"
           required
-          className={`flex-1 ${inputClass}`}
+          className={`min-w-0 flex-1 ${inputClass}`}
         />
         <input
           type="email"
@@ -52,7 +52,7 @@ export function DropAlertForm({ dark = false }: { dark?: boolean }) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Deine E-Mail"
           required
-          className={`flex-1 ${inputClass}`}
+          className={`min-w-0 flex-1 ${inputClass}`}
         />
         <button
           type="submit"
