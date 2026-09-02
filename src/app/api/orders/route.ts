@@ -111,6 +111,17 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (orderError) {
+    if (orderError.message.includes("not enough stock")) {
+      try {
+        await stripe.paymentIntents.cancel(payment_intent_id);
+      } catch (err) {
+        console.error("Failed to cancel PaymentIntent after stock rejection:", err);
+      }
+      return NextResponse.json(
+        { error: "Diese Menge ist nicht mehr verfügbar. Bitte Menge reduzieren." },
+        { status: 409 }
+      );
+    }
     return NextResponse.json({ error: orderError.message }, { status: 500 });
   }
 

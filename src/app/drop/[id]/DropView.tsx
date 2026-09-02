@@ -137,6 +137,19 @@ export function DropView({
     };
   }, [drop.id]);
 
+  const selectedVariantObj = variants.find((v) => v.id === selectedVariant);
+  const variantRemaining = selectedVariantObj
+    ? Math.max(0, selectedVariantObj.available_units - selectedVariantObj.ordered_units)
+    : 0;
+  const dropRemaining = Math.max(0, drop.max_units - drop.total_ordered);
+  const maxOrderable = Math.min(variantRemaining, dropRemaining);
+
+  useEffect(() => {
+    if (maxOrderable > 0 && quantity > maxOrderable) {
+      setQuantity(maxOrderable);
+    }
+  }, [maxOrderable, quantity]);
+
   const unitPrice = drop.price_tiers[0]?.price ?? drop.current_price;
   const subtotal = useMemo(() => unitPrice * quantity, [unitPrice, quantity]);
   const vatAmount = useMemo(() => subtotal - subtotal / (1 + VAT), [subtotal]);
@@ -274,13 +287,17 @@ export function DropView({
 
         <div className="mt-8 grid gap-6 sm:grid-cols-2">
           <div className="rounded-lg border-2 border-black p-6">
-            <div className="text-sm text-zinc-600">Bestellte Einheiten</div>
-            <div className="mt-1 text-5xl font-bold tabular-nums">
-              {drop.total_ordered}
-            </div>
-            <div className="mt-4 text-sm text-zinc-600">Aktueller Preis</div>
+            <div className="text-sm text-zinc-600">Aktueller Preis</div>
             <div className="text-3xl font-bold tabular-nums">
               <span className="bg-yellow-400 px-1">{drop.current_price.toFixed(2)} €</span>
+            </div>
+            <div className="mt-4 text-sm text-zinc-600">
+              <strong className="tabular-nums">{drop.total_ordered}</strong> Einheiten sind
+              schon weg. Es sind noch{" "}
+              <strong className="tabular-nums">
+                {Math.max(0, drop.max_units - drop.total_ordered)}
+              </strong>{" "}
+              Einheiten verfügbar.
             </div>
           </div>
 
@@ -410,12 +427,24 @@ export function DropView({
                 <input
                   type="number"
                   min={1}
+                  max={maxOrderable || undefined}
                   value={quantity}
-                  onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
+                  onChange={(e) =>
+                    setQuantity(
+                      Math.min(Math.max(1, Number(e.target.value)), maxOrderable || 1)
+                    )
+                  }
                   required
-                  disabled={clientSecret !== null}
+                  disabled={clientSecret !== null || maxOrderable === 0}
                   className="rounded border border-zinc-400 bg-white px-3 py-2 disabled:bg-zinc-100"
                 />
+                {maxOrderable === 0 ? (
+                  <span className="text-xs text-red-600">Diese Sorte ist ausverkauft.</span>
+                ) : (
+                  <span className="text-xs text-zinc-500">
+                    Es sind nur noch {maxOrderable} Einheiten auf Lager.
+                  </span>
+                )}
               </label>
 
               <label className="flex flex-col gap-1 text-sm">

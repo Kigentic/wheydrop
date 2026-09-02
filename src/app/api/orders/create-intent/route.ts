@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { stripe } from "@/lib/stripe";
 import { SHIPPING_FLAT } from "@/lib/pricing";
-import type { Drop } from "@/lib/types";
+import type { Drop, Variant } from "@/lib/types";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -31,13 +31,25 @@ export async function POST(req: NextRequest) {
 
   const { data: variant, error: variantError } = await supabase
     .from("variants")
-    .select("id")
+    .select("*")
     .eq("id", variant_id)
     .eq("drop_id", drop_id)
     .single();
 
   if (variantError || !variant) {
     return NextResponse.json({ error: "variant not found" }, { status: 404 });
+  }
+
+  const typedVariant = variant as Variant;
+  const variantRemaining = typedVariant.available_units - typedVariant.ordered_units;
+  const dropRemaining = typedDrop.max_units - typedDrop.total_ordered;
+  const maxOrderable = Math.min(variantRemaining, dropRemaining);
+
+  if (quantity > maxOrderable) {
+    return NextResponse.json(
+      { error: "not enough stock", available: Math.max(0, maxOrderable) },
+      { status: 409 }
+    );
   }
 
   const maxPrice = typedDrop.price_tiers[0]?.price ?? typedDrop.current_price;
