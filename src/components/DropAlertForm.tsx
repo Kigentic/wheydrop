@@ -37,14 +37,14 @@ export function DropAlertForm({ dark = false }: { dark?: boolean }) {
     : "rounded border-2 border-black bg-white px-3 py-2 text-black placeholder:text-zinc-400";
 
   return (
-    <div className="mx-auto max-w-md">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+    <div className="mx-auto max-w-xl">
+      <form onSubmit={handleSubmit} className="flex flex-col flex-wrap gap-3 sm:flex-row">
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Dein Name"
           required
-          className={`min-w-0 flex-1 ${inputClass}`}
+          className={`min-w-[140px] flex-1 ${inputClass}`}
         />
         <input
           type="email"
@@ -52,12 +52,12 @@ export function DropAlertForm({ dark = false }: { dark?: boolean }) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Deine E-Mail"
           required
-          className={`min-w-0 flex-1 ${inputClass}`}
+          className={`min-w-[140px] flex-1 ${inputClass}`}
         />
         <button
           type="submit"
           disabled={status === "loading"}
-          className="whitespace-nowrap rounded-full bg-yellow-400 px-6 py-2 font-bold text-black transition hover:bg-yellow-300 disabled:opacity-50"
+          className="w-full whitespace-nowrap rounded-full bg-yellow-400 px-6 py-2 font-bold text-black transition hover:bg-yellow-300 disabled:opacity-50 sm:w-auto"
         >
           {status === "loading" ? "…" : "Drop Alarm aktivieren"}
         </button>
