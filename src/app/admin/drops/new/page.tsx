@@ -21,6 +21,21 @@ interface FlavorRow {
 
 const inputClass = "rounded border border-zinc-400 bg-white px-3 py-2";
 
+/** Parses a number typed with either "." or a German "," as the decimal separator. */
+function parseNum(value: string): number {
+  return Number(value.trim().replace(",", "."));
+}
+
+function tiersToNumbers(rows: Tier[]) {
+  return rows
+    .filter((t) => t.min_units !== "" && t.price !== "")
+    .map((t) => ({
+      min_units: parseNum(t.min_units),
+      max_units: t.max_units === "" ? null : parseNum(t.max_units),
+      price: parseNum(t.price),
+    }));
+}
+
 export default function NewDrop() {
   const router = useRouter();
   const [title, setTitle] = useState("");
@@ -107,18 +122,8 @@ export default function NewDrop() {
       description,
       image_urls: imageUrls,
       purchase_price: null,
-      purchase_tiers: purchaseTiers
-        .filter((t) => t.min_units !== "" && t.price !== "")
-        .map((t) => ({
-          min_units: Number(t.min_units),
-          max_units: t.max_units === "" ? null : Number(t.max_units),
-          price: Number(t.price),
-        })),
-      price_tiers: tiers.map((t) => ({
-        min_units: Number(t.min_units),
-        max_units: t.max_units === "" ? null : Number(t.max_units),
-        price: Number(t.price),
-      })),
+      purchase_tiers: tiersToNumbers(purchaseTiers),
+      price_tiers: tiersToNumbers(tiers),
     };
 
     const res = await fetch("/api/admin/drops", {
@@ -347,33 +352,15 @@ export default function NewDrop() {
             </p>
             <div className="mt-2">
               <MarginCheck
-                priceTiers={tiers
-                  .filter((t) => t.min_units !== "" && t.price !== "")
-                  .map((t) => ({
-                    min_units: Number(t.min_units),
-                    max_units: t.max_units === "" ? null : Number(t.max_units),
-                    price: Number(t.price),
-                  }))}
-                purchaseTiers={purchaseTiers
-                  .filter((t) => t.min_units !== "" && t.price !== "")
-                  .map((t) => ({
-                    min_units: Number(t.min_units),
-                    max_units: t.max_units === "" ? null : Number(t.max_units),
-                    price: Number(t.price),
-                  }))}
+                priceTiers={tiersToNumbers(tiers)}
+                purchaseTiers={tiersToNumbers(purchaseTiers)}
                 dropMaxUnits={Number(maxUnits) || undefined}
               />
             </div>
           </div>
 
           <PriceCalculator
-            purchaseTiers={purchaseTiers
-              .filter((t) => t.min_units !== "" && t.price !== "")
-              .map((t) => ({
-                min_units: Number(t.min_units),
-                max_units: t.max_units === "" ? null : Number(t.max_units),
-                price: Number(t.price),
-              }))}
+            purchaseTiers={tiersToNumbers(purchaseTiers)}
             onApply={(calculatedTiers, volume) => {
               setTiers(calculatedTiers);
               setMaxUnits(String(volume));
