@@ -3,7 +3,19 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { title, brand_name, starts_at, ends_at, price_tiers, max_units, flavors, description, image_urls, purchase_price } = body;
+  const {
+    title,
+    brand_name,
+    starts_at,
+    ends_at,
+    price_tiers,
+    max_units,
+    flavors,
+    description,
+    image_urls,
+    purchase_price,
+    purchase_tiers,
+  } = body;
 
   if (!title || !brand_name || !starts_at || !ends_at || !price_tiers?.length || !max_units || !flavors?.length) {
     return NextResponse.json({ error: "missing fields" }, { status: 400 });
@@ -28,6 +40,7 @@ export async function POST(req: NextRequest) {
       description: description ?? "",
       image_urls: image_urls ?? [],
       purchase_price: purchase_price ?? null,
+      purchase_tiers: purchase_tiers?.length ? purchase_tiers : null,
     })
     .select()
     .single();

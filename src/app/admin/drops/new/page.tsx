@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PriceCalculator from "./PriceCalculator";
 import ImageUploader from "./ImageUploader";
+import MarginCheck from "./MarginCheck";
 
 interface Tier {
   min_units: string;
@@ -35,6 +36,9 @@ export default function NewDrop() {
   const [description, setDescription] = useState("");
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [purchasePrice, setPurchasePrice] = useState<number | null>(null);
+  const [purchaseTiers, setPurchaseTiers] = useState<Tier[]>([
+    { min_units: "1", max_units: "", price: "" },
+  ]);
   const [tiers, setTiers] = useState<Tier[]>([
     { min_units: "0", max_units: "249", price: "32.90" },
     { min_units: "250", max_units: "499", price: "30.90" },
@@ -55,6 +59,18 @@ export default function NewDrop() {
 
   function removeTier(i: number) {
     setTiers((prev) => prev.filter((_, idx) => idx !== i));
+  }
+
+  function updatePurchaseTier(i: number, field: keyof Tier, value: string) {
+    setPurchaseTiers((prev) => prev.map((t, idx) => (idx === i ? { ...t, [field]: value } : t)));
+  }
+
+  function addPurchaseTier() {
+    setPurchaseTiers((prev) => [...prev, { min_units: "", max_units: "", price: "" }]);
+  }
+
+  function removePurchaseTier(i: number) {
+    setPurchaseTiers((prev) => prev.filter((_, idx) => idx !== i));
   }
 
   function updateFlavorRow(i: number, field: keyof FlavorRow, value: string) {
@@ -92,6 +108,13 @@ export default function NewDrop() {
       description,
       image_urls: imageUrls,
       purchase_price: purchasePrice,
+      purchase_tiers: purchaseTiers
+        .filter((t) => t.min_units !== "" && t.price !== "")
+        .map((t) => ({
+          min_units: Number(t.min_units),
+          max_units: t.max_units === "" ? null : Number(t.max_units),
+          price: Number(t.price),
+        })),
       price_tiers: tiers.map((t) => ({
         min_units: Number(t.min_units),
         max_units: t.max_units === "" ? null : Number(t.max_units),
@@ -230,6 +253,7 @@ export default function NewDrop() {
               setTiers(calculatedTiers);
               setMaxUnits(String(volume));
               setPurchasePrice(purchase);
+              setPurchaseTiers([{ min_units: "1", max_units: "", price: String(purchase) }]);
             }}
           />
 
@@ -270,6 +294,75 @@ export default function NewDrop() {
                   </button>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-zinc-700">Einkaufspreis-Stufen (EK)</h2>
+              <button type="button" onClick={addPurchaseTier} className="text-sm font-semibold hover:underline">
+                + Stufe
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-zinc-500">
+              Wenn der Hersteller ab bestimmten Mengen günstiger liefert (z. B. 1.–1000. Einheit
+              zu 18 €, ab 1001. zu 17 €), hier mehrere Stufen eintragen — sonst reicht eine
+              Zeile. Zählt wie beim Hersteller üblich pro Einheiten-Bracket, nicht rückwirkend.
+            </p>
+            <div className="mt-2 space-y-2">
+              {purchaseTiers.map((t, i) => (
+                <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2">
+                  <input
+                    placeholder="ab Einheit"
+                    value={t.min_units}
+                    onChange={(e) => updatePurchaseTier(i, "min_units", e.target.value)}
+                    required
+                    className={`${inputClass} text-sm`}
+                  />
+                  <input
+                    placeholder="bis (leer = ∞)"
+                    value={t.max_units}
+                    onChange={(e) => updatePurchaseTier(i, "max_units", e.target.value)}
+                    className={`${inputClass} text-sm`}
+                  />
+                  <input
+                    placeholder="EK-Preis"
+                    value={t.price}
+                    onChange={(e) => updatePurchaseTier(i, "price", e.target.value)}
+                    required
+                    className={`${inputClass} text-sm`}
+                  />
+                  {purchaseTiers.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removePurchaseTier(i)}
+                      className="text-zinc-500 hover:text-red-600"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-3">
+              <MarginCheck
+                priceTiers={tiers
+                  .filter((t) => t.min_units !== "" && t.price !== "")
+                  .map((t) => ({
+                    min_units: Number(t.min_units),
+                    max_units: t.max_units === "" ? null : Number(t.max_units),
+                    price: Number(t.price),
+                  }))}
+                purchaseTiers={purchaseTiers
+                  .filter((t) => t.min_units !== "" && t.price !== "")
+                  .map((t) => ({
+                    min_units: Number(t.min_units),
+                    max_units: t.max_units === "" ? null : Number(t.max_units),
+                    price: Number(t.price),
+                  }))}
+                dropMaxUnits={Number(maxUnits) || undefined}
+              />
             </div>
           </div>
 

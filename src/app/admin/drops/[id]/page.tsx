@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { marginForGross } from "@/lib/pricing";
+import { marginForGross, avgPurchasePrice } from "@/lib/pricing";
 import type { Drop, Order, Variant } from "@/lib/types";
 import { CloseDropButton } from "./CloseDropButton";
 
@@ -123,40 +123,65 @@ export default async function AdminDropDetail({
           </table>
         </div>
 
-        <h2 className="mt-10 mb-3 text-lg font-bold">Preisstufen</h2>
-        <div className="overflow-x-auto rounded-lg border-2 border-black">
-          <table className="w-full text-sm">
-            <thead className="bg-yellow-400 text-left">
-              <tr>
-                <th className="px-4 py-3">Einheiten</th>
-                <th className="px-4 py-3">Preis</th>
-                {typedDrop.purchase_price != null && <th className="px-4 py-3">Marge / Einheit</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {typedDrop.price_tiers.map((t, i) => (
-                <tr key={i} className="border-t border-zinc-300">
-                  <td className="px-4 py-3 tabular-nums">
-                    {t.min_units}
-                    {t.max_units != null ? ` – ${t.max_units}` : "+"}
-                  </td>
-                  <td className="px-4 py-3 tabular-nums">{t.price.toFixed(2)} €</td>
-                  {typedDrop.purchase_price != null && (
-                    <td className="px-4 py-3 tabular-nums text-green-700">
-                      {marginForGross(t.price, typedDrop.purchase_price).toFixed(2)} €
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {typedDrop.purchase_price != null && (
-          <p className="mt-2 text-xs text-zinc-500">
-            Einkaufspreis: {typedDrop.purchase_price.toFixed(2)} € · Marge inkl. MwSt. (19%) und Stripe-Gebühr
-            (1,5% + 0,25 €)
-          </p>
-        )}
+        {(() => {
+          const hasPurchaseTiers = !!typedDrop.purchase_tiers?.length;
+          const hasMargin = hasPurchaseTiers || typedDrop.purchase_price != null;
+          const purchaseFor = (unitsAtTier: number) =>
+            hasPurchaseTiers
+              ? avgPurchasePrice(typedDrop.purchase_tiers!, Math.max(unitsAtTier, 1))
+              : typedDrop.purchase_price!;
+
+          return (
+            <>
+              <h2 className="mt-10 mb-3 text-lg font-bold">Preisstufen</h2>
+              <div className="overflow-x-auto rounded-lg border-2 border-black">
+                <table className="w-full text-sm">
+                  <thead className="bg-yellow-400 text-left">
+                    <tr>
+                      <th className="px-4 py-3">Einheiten</th>
+                      <th className="px-4 py-3">Preis</th>
+                      {hasMargin && <th className="px-4 py-3">{hasPurchaseTiers ? "Ø-EK" : "EK"}</th>}
+                      {hasMargin && <th className="px-4 py-3">Marge / Einheit</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {typedDrop.price_tiers.map((t, i) => {
+                      const unitsAtTier = t.max_units ?? typedDrop.max_units ?? t.min_units;
+                      const purchase = hasMargin ? purchaseFor(unitsAtTier) : 0;
+                      return (
+                        <tr key={i} className="border-t border-zinc-300">
+                          <td className="px-4 py-3 tabular-nums">
+                            {t.min_units}
+                            {t.max_units != null ? ` – ${t.max_units}` : "+"}
+                          </td>
+                          <td className="px-4 py-3 tabular-nums">{t.price.toFixed(2)} €</td>
+                          {hasMargin && (
+                            <td className="px-4 py-3 tabular-nums text-zinc-600">
+                              {purchase.toFixed(2)} €
+                            </td>
+                          )}
+                          {hasMargin && (
+                            <td className="px-4 py-3 tabular-nums text-green-700">
+                              {marginForGross(t.price, purchase).toFixed(2)} €
+                            </td>
+                          )}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              {hasMargin && (
+                <p className="mt-2 text-xs text-zinc-500">
+                  {hasPurchaseTiers
+                    ? "Ø-EK = gewichteter Durchschnitt über die Einkaufspreis-Stufen bei der jeweiligen Gesamtmenge."
+                    : `Einkaufspreis: ${typedDrop.purchase_price!.toFixed(2)} €.`}{" "}
+                  Marge inkl. MwSt. (19%) und Stripe-Gebühr (1,5% + 0,25 €)
+                </p>
+              )}
+            </>
+          );
+        })()}
 
         <h2 className="mt-10 mb-3 text-lg font-bold">Bestellungen ({orderList.length})</h2>
         <div className="overflow-x-auto rounded-lg border-2 border-black">

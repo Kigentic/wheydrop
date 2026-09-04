@@ -21,6 +21,7 @@ export interface Drop {
   description: string;
   image_urls: string[];
   purchase_price: number | null;
+  purchase_tiers: PriceTier[] | null;
   reminder_24h_sent_at: string | null;
   reminder_start_sent_at: string | null;
   created_at: string;
