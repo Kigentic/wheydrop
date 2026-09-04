@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import PriceCalculator from "./PriceCalculator";
+import DropPlanner from "./DropPlanner";
 import ImageUploader from "./ImageUploader";
 import MarginCheck from "./MarginCheck";
 
@@ -304,6 +304,14 @@ export default function NewDrop() {
             </div>
           </div>
 
+          <DropPlanner
+            purchaseTiers={tiersToNumbers(purchaseTiers)}
+            onApply={(calculatedTiers, volume) => {
+              setTiers(calculatedTiers);
+              setMaxUnits(String(volume));
+            }}
+          />
+
           <div>
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-semibold text-zinc-700">
@@ -313,6 +321,9 @@ export default function NewDrop() {
                 + Stufe
               </button>
             </div>
+            <p className="mt-1 text-xs text-zinc-500">
+              Vom Drop-Planer oben übernommen, oder von Hand eingetragen/angepasst.
+            </p>
             <div className="mt-2 space-y-2">
               {tiers.map((t, i) => (
                 <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2">
@@ -347,8 +358,8 @@ export default function NewDrop() {
           <div>
             <h2 className="text-sm font-semibold text-zinc-700">Margen-Check</h2>
             <p className="mt-1 text-xs text-zinc-500">
-              Vergleicht VK-Preisstufen oben mit den Einkaufspreis-Stufen: bricht die
-              Gesamtmarge irgendwo ein, wenn eine Stufe komplett verkauft wird?
+              Prüft, ob das, was aktuell oben in Preisstufen (VK) und Einkaufspreis-Stufen (EK)
+              steht, wasserdicht ist — egal ob vom Planer übernommen oder von Hand eingetragen.
             </p>
             <div className="mt-2">
               <MarginCheck
@@ -358,14 +369,6 @@ export default function NewDrop() {
               />
             </div>
           </div>
-
-          <PriceCalculator
-            purchaseTiers={tiersToNumbers(purchaseTiers)}
-            onApply={(calculatedTiers, volume) => {
-              setTiers(calculatedTiers);
-              setMaxUnits(String(volume));
-            }}
-          />
 
           <p className="text-xs text-zinc-500">
             <span className="text-red-600">*</span> Pflichtfeld
