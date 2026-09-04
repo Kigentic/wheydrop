@@ -12,6 +12,22 @@ function deNum(n: number) {
   return n.toLocaleString("de-DE");
 }
 
+function Box({
+  tone,
+  children,
+}: {
+  tone: "neutral" | "green" | "red";
+  children: React.ReactNode;
+}) {
+  const cls =
+    tone === "green"
+      ? "border-green-600 bg-green-50"
+      : tone === "red"
+      ? "border-red-600 bg-red-50"
+      : "border-zinc-300 bg-zinc-50";
+  return <div className={`rounded-lg border-2 p-4 ${cls}`}>{children}</div>;
+}
+
 export default function MarginCheck({
   priceTiers,
   purchaseTiers,
@@ -21,54 +37,71 @@ export default function MarginCheck({
   purchaseTiers: PriceTier[];
   dropMaxUnits?: number;
 }) {
-  const validPrice = priceTiers.every(
-    (t) => Number.isFinite(t.min_units) && Number.isFinite(t.price) && t.price > 0
-  );
-  const validPurchase =
-    purchaseTiers.length > 0 &&
-    purchaseTiers.every(
-      (t) => Number.isFinite(t.min_units) && Number.isFinite(t.price) && t.price > 0
-    );
+  const missing: string[] = [];
+  if (priceTiers.length < 2) {
+    missing.push("Mindestens 2 vollständige VK-Preisstufen eintragen.");
+  }
+  if (purchaseTiers.length < 1) {
+    missing.push("Mindestens eine vollständige Einkaufspreis-Stufe (EK) eintragen.");
+  }
 
   const result = useMemo(() => {
-    if (!validPrice || !validPurchase || priceTiers.length < 1) return null;
+    if (missing.length > 0) return { kind: "missing" as const };
     try {
-      return checkMarginWaterproof(priceTiers, purchaseTiers, dropMaxUnits);
-    } catch {
-      return null;
+      return { kind: "ok" as const, data: checkMarginWaterproof(priceTiers, purchaseTiers, dropMaxUnits) };
+    } catch (err) {
+      return { kind: "error" as const, message: err instanceof Error ? err.message : "Unbekannter Fehler" };
     }
-  }, [validPrice, validPurchase, priceTiers, purchaseTiers, dropMaxUnits]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [missing.length, priceTiers, purchaseTiers, dropMaxUnits]);
 
-  if (!validPrice || !validPurchase) {
+  if (result.kind === "missing") {
     return (
-      <p className="text-xs text-zinc-500">
-        Preisstufen und mindestens eine Einkaufspreis-Stufe ausfüllen, um die Margen-Prüfung
-        zu sehen.
-      </p>
+      <Box tone="neutral">
+        <p className="font-semibold text-zinc-700">Noch nicht genug Daten für den Margen-Check.</p>
+        <ul className="mt-1 list-disc pl-5 text-sm text-zinc-600">
+          {missing.map((m, i) => (
+            <li key={i}>{m}</li>
+          ))}
+        </ul>
+      </Box>
     );
   }
 
-  if (!result) return null;
-
-  if (result.ok) {
+  if (result.kind === "error") {
     return (
-      <div className="rounded-lg border-2 border-green-600 bg-green-50 p-4">
+      <Box tone="red">
+        <p className="font-bold text-red-800">Fehler bei der Berechnung.</p>
+        <p className="mt-1 text-sm text-red-800">{result.message}</p>
+        <p className="mt-1 text-xs text-red-700">
+          Bitte Einheiten-Bereiche der Preis- und Einkaufsstufen prüfen (Überschneidungen, Lücken,
+          min &gt; max).
+        </p>
+      </Box>
+    );
+  }
+
+  const check = result.data;
+
+  if (check.ok) {
+    return (
+      <Box tone="green">
         <p className="font-bold text-green-800">✓ Ok — passt.</p>
         <p className="mt-1 text-sm text-green-800">
           Wird eine Preisstufe komplett verkauft und geht in die nächste (günstigere) über,
-          steigt die Gesamtmarge trotzdem weiter — kein Stufe, die sich für euch nicht lohnt.
+          steigt die Gesamtmarge trotzdem weiter — keine Stufe, die sich für euch nicht lohnt.
         </p>
-      </div>
+      </Box>
     );
   }
 
   return (
-    <div className="rounded-lg border-2 border-red-600 bg-red-50 p-4">
+    <Box tone="red">
       <p className="font-bold text-red-800">✕ So nicht — Marge bricht ein.</p>
 
-      {result.negativeMarginTiers.length > 0 && (
+      {check.negativeMarginTiers.length > 0 && (
         <div className="mt-2 space-y-1 text-sm text-red-800">
-          {result.negativeMarginTiers.map((t) => (
+          {check.negativeMarginTiers.map((t) => (
             <p key={t.tierIndex}>
               Stufe {t.tierIndex + 1}: Marge/Einheit ist <strong>{eur(t.marginPerUnit)}</strong> —
               negativ. Verkaufspreis erhöhen oder Einkaufspreis dieser Stufe senken.
@@ -78,7 +111,7 @@ export default function MarginCheck({
       )}
 
       <div className="mt-2 space-y-3">
-        {result.boundaries
+        {check.boundaries
           .filter((b) => !b.ok)
           .map((b, i) => (
             <div key={i} className="rounded border border-red-300 bg-white p-3 text-sm">
@@ -107,6 +140,6 @@ export default function MarginCheck({
             </div>
           ))}
       </div>
-    </div>
+    </Box>
   );
 }

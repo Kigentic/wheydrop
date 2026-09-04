@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { avgPurchasePrice } from "@/lib/pricing";
+import type { PriceTier } from "@/lib/types";
 
 const VAT = 0.19;
 const STRIPE_PCT = 0.015;
@@ -65,26 +67,27 @@ function deNum(n: number) {
 }
 
 export default function PriceCalculator({
+  purchaseTiers,
   onApply,
 }: {
+  purchaseTiers: PriceTier[];
   onApply: (
     tiers: { min_units: string; max_units: string; price: string }[],
-    maxUnits: number,
-    purchasePrice: number
+    maxUnits: number
   ) => void;
 }) {
   const [open, setOpen] = useState(true);
-  const [purchase, setPurchase] = useState("20");
   const [volume, setVolume] = useState("1000");
   const [minMargin, setMinMargin] = useState("2.5");
   const [maxMargin, setMaxMargin] = useState("11");
   const [tierCount, setTierCount] = useState(4);
 
-  const s = parseFloat(purchase) || 0;
   const v = parseInt(volume, 10) || 0;
+  const hasPurchaseTiers = purchaseTiers.length > 0;
+  const s = hasPurchaseTiers && v > 0 ? avgPurchasePrice(purchaseTiers, v) : 0;
   const mn = parseFloat(minMargin) || 0;
   const mx = parseFloat(maxMargin) || 0;
-  const valid = s > 0 && v > 0 && mn > 0 && mx > mn;
+  const valid = hasPurchaseTiers && s > 0 && v > 0 && mn > 0 && mx > mn;
 
   const tiers = useMemo(() => (valid ? buildTiers(s, v, tierCount, mn, mx) : []), [valid, s, v, tierCount, mn, mx]);
 
@@ -101,7 +104,7 @@ export default function PriceCalculator({
       max_units: i === tiers.length - 1 ? "" : String(t.maxUnits),
       price: t.gross.toFixed(2),
     }));
-    onApply(formTiers, v, s);
+    onApply(formTiers, v);
   }
 
   return (
@@ -117,18 +120,18 @@ export default function PriceCalculator({
 
       {open && (
         <div className="space-y-4 border-t border-zinc-300 px-4 py-4">
+          {!hasPurchaseTiers ? (
+            <p className="rounded border border-amber-400 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              Trag oben zuerst die Einkaufspreis-Stufen (EK) ein — der Kalkulator rechnet damit.
+            </p>
+          ) : (
+            <p className="text-xs text-zinc-600">
+              Ø-Einkaufspreis bei {deNum(v)} Einheiten:{" "}
+              <strong>{eur(s)}</strong> (aus den Einkaufspreis-Stufen oben)
+            </p>
+          )}
+
           <div className="grid grid-cols-2 gap-3">
-            <label className="flex flex-col gap-1 text-xs text-zinc-600">
-              Einkaufspreis Netto (€)
-              <input
-                type="number"
-                step="0.5"
-                min="0"
-                value={purchase}
-                onChange={(e) => setPurchase(e.target.value)}
-                className="rounded border border-zinc-400 bg-white px-2 py-1.5 text-sm"
-              />
-            </label>
             <label className="flex flex-col gap-1 text-xs text-zinc-600">
               Volumen (Einheiten)
               <input
