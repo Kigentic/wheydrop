@@ -110,6 +110,17 @@ export default function HerstellerPage() {
                 fest. Eure interne Kalkulation müsst ihr uns gegenüber nicht offenlegen.
               </p>
             </div>
+            <div className="sm:col-span-2">
+              <span className="text-3xl">🚀</span>
+              <h3 className="mt-3 text-lg font-bold">Neue Kunden für eure Marke</h3>
+              <p className="mt-2 text-sm text-zinc-300">
+                Ein Drop bringt euch nicht nur Volumen, sondern auch Sichtbarkeit bei
+                Leuten, die eure Marke vorher gar nicht kannten. Wer über den Bestpreis
+                zum ersten Mal probiert und überzeugt ist, kauft danach zum regulären
+                Preis weiter — ihr gewinnt Neukunden, die euch sonst nie gefunden
+                hätten.
+              </p>
+            </div>
           </div>
 
           <div className="mt-10 rounded-lg border-2 border-yellow-400 bg-zinc-900 p-6">
