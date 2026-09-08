@@ -7,6 +7,9 @@ export function SiteFooter() {
         <span>© {new Date().getFullYear()} Wheydrop. Alle Preise inkl. MwSt.</span>
 
         <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <Link href="/hersteller" className="hover:text-white hover:underline">
+            Für Hersteller
+          </Link>
           <Link href="/impressum" className="hover:text-white hover:underline">
             Impressum
           </Link>

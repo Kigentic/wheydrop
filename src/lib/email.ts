@@ -222,6 +222,25 @@ export function supplierConfirmedEmailHtml(
   `);
 }
 
+export function manufacturerContactEmailHtml(
+  company: string,
+  contactName: string,
+  email: string,
+  phone: string,
+  message: string
+) {
+  return layout(`
+    <span style="display:inline-block; background:#FFD600; padding:4px 10px; font-size:11px; font-weight:800; text-transform:uppercase; border-radius:4px;">Hersteller-Anfrage</span>
+    <h1 style="font-size:20px; margin:16px 0 12px;">${escapeHtml(company)}</h1>
+    <table style="width:100%; font-size:14px; color:#333; border-collapse:collapse; margin:16px 0;">
+      <tr><td style="padding:4px 0; color:#999; width:120px;">Ansprechpartner</td><td style="padding:4px 0;">${escapeHtml(contactName)}</td></tr>
+      <tr><td style="padding:4px 0; color:#999;">E-Mail</td><td style="padding:4px 0;"><a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a></td></tr>
+      ${phone ? `<tr><td style="padding:4px 0; color:#999;">Telefon</td><td style="padding:4px 0;">${escapeHtml(phone)}</td></tr>` : ""}
+    </table>
+    <p style="font-size:14px; color:#333; white-space:pre-line; line-height:1.5;">${escapeHtml(message)}</p>
+  `);
+}
+
 function escapeHtml(s: string) {
   return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
 }
