@@ -41,7 +41,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border-2 border-black p-6">
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border-2 border-black bg-white p-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm">
           Firma <span className="text-red-600">*</span>
