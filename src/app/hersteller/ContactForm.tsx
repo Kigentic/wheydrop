@@ -44,7 +44,7 @@ export function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border-2 border-black bg-white p-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm">
-          Firma <span className="text-red-600">*</span>
+          <span>Firma <span className="text-red-600">*</span></span>
           <input
             value={company}
             onChange={(e) => setCompany(e.target.value)}
@@ -53,7 +53,7 @@ export function ContactForm() {
           />
         </label>
         <label className="flex flex-col gap-1 text-sm">
-          Ansprechpartner <span className="text-red-600">*</span>
+          <span>Ansprechpartner <span className="text-red-600">*</span></span>
           <input
             value={contactName}
             onChange={(e) => setContactName(e.target.value)}
@@ -62,7 +62,7 @@ export function ContactForm() {
           />
         </label>
         <label className="flex flex-col gap-1 text-sm">
-          E-Mail <span className="text-red-600">*</span>
+          <span>E-Mail <span className="text-red-600">*</span></span>
           <input
             type="email"
             value={email}
@@ -82,7 +82,7 @@ export function ContactForm() {
       </div>
 
       <label className="flex flex-col gap-1 text-sm">
-        Nachricht <span className="text-red-600">*</span>
+        <span>Nachricht <span className="text-red-600">*</span></span>
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
