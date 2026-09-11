@@ -2,8 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { marginForGross, avgPurchasePrice } from "@/lib/pricing";
-import type { Drop, Order, Variant } from "@/lib/types";
+import type { Drop, Order, Variant, Manufacturer, ManufacturerTransfer } from "@/lib/types";
 import { CloseDropButton } from "./CloseDropButton";
+import { ManufacturerAssign } from "./ManufacturerAssign";
+import { TransferButton } from "./TransferButton";
 
 export const revalidate = 0;
 
@@ -15,11 +17,14 @@ export default async function AdminDropDetail({
   const { id } = await params;
   const supabase = createAdminClient();
 
-  const [{ data: drop }, { data: variants }, { data: orders }] = await Promise.all([
-    supabase.from("drops").select("*").eq("id", id).single(),
-    supabase.from("variants").select("*").eq("drop_id", id),
-    supabase.from("orders").select("*").eq("drop_id", id).order("created_at", { ascending: false }),
-  ]);
+  const [{ data: drop }, { data: variants }, { data: orders }, { data: manufacturers }, { data: transfers }] =
+    await Promise.all([
+      supabase.from("drops").select("*").eq("id", id).single(),
+      supabase.from("variants").select("*").eq("drop_id", id),
+      supabase.from("orders").select("*").eq("drop_id", id).order("created_at", { ascending: false }),
+      supabase.from("manufacturers").select("*").order("name", { ascending: true }),
+      supabase.from("manufacturer_transfers").select("*").eq("drop_id", id).order("created_at", { ascending: false }),
+    ]);
 
   if (!drop) notFound();
 
@@ -27,6 +32,21 @@ export default async function AdminDropDetail({
   const variantList = (variants ?? []) as Variant[];
   const variantMap = new Map(variantList.map((v) => [v.id, v.flavor]));
   const orderList = (orders ?? []) as Order[];
+  const manufacturerList = (manufacturers ?? []) as Manufacturer[];
+  const transferList = (transfers ?? []) as ManufacturerTransfer[];
+  const assignedManufacturer = manufacturerList.find((m) => m.id === typedDrop.manufacturer_id) ?? null;
+
+  const hasPurchaseTiers = !!typedDrop.purchase_tiers?.length;
+  const suggestedTransferAmount = hasPurchaseTiers
+    ? avgPurchasePrice(typedDrop.purchase_tiers!, Math.max(typedDrop.total_ordered, 1)) * typedDrop.total_ordered
+    : (typedDrop.purchase_price ?? 0) * typedDrop.total_ordered;
+
+  let transferDisabledReason: string | undefined;
+  if (!assignedManufacturer) {
+    transferDisabledReason = "Erst einen Hersteller zuordnen, um transferieren zu können.";
+  } else if (assignedManufacturer.onboarding_status !== "complete") {
+    transferDisabledReason = "Hersteller hat das Stripe-Onboarding noch nicht abgeschlossen.";
+  }
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -221,6 +241,48 @@ export default async function AdminDropDetail({
               )}
             </tbody>
           </table>
+        </div>
+
+        <h2 className="mt-10 mb-3 text-lg font-bold">Hersteller-Auszahlung</h2>
+        <div className="rounded-lg border-2 border-black p-4">
+          <p className="text-sm text-zinc-600">Zugeordneter Hersteller</p>
+          <div className="mt-2">
+            <ManufacturerAssign
+              dropId={typedDrop.id}
+              manufacturers={manufacturerList}
+              currentManufacturerId={typedDrop.manufacturer_id}
+            />
+          </div>
+
+          {typedDrop.status !== "closed" ? (
+            <p className="mt-4 text-sm text-zinc-500">
+              Transfer ist erst möglich, wenn der Drop geschlossen ist.
+            </p>
+          ) : (
+            <div className="mt-4">
+              <TransferButton
+                dropId={typedDrop.id}
+                suggestedAmount={suggestedTransferAmount}
+                disabled={!!transferDisabledReason}
+                disabledReason={transferDisabledReason}
+              />
+            </div>
+          )}
+
+          {transferList.length > 0 && (
+            <div className="mt-4">
+              <p className="text-sm font-semibold">Bisherige Transfers</p>
+              <ul className="mt-2 space-y-1 text-sm text-zinc-600">
+                {transferList.map((t) => (
+                  <li key={t.id}>
+                    {t.amount.toFixed(2)} € –{" "}
+                    {new Date(t.created_at).toLocaleString("de-DE", { timeZone: "Europe/Berlin" })} (
+                    {t.stripe_transfer_id})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </main>
     </div>

@@ -27,6 +27,12 @@ export default async function AdminDashboard() {
               Hersteller-Zusagen
             </Link>
             <Link
+              href="/admin/manufacturers"
+              className="rounded-full border-2 border-black px-4 py-2 text-sm font-bold hover:bg-zinc-100"
+            >
+              Hersteller-Konten
+            </Link>
+            <Link
               href="/admin/drops/new"
               className="rounded-full bg-black px-4 py-2 text-sm font-bold text-yellow-400 hover:bg-zinc-900"
             >

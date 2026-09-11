@@ -22,8 +22,30 @@ export interface Drop {
   image_urls: string[];
   purchase_price: number | null;
   purchase_tiers: PriceTier[] | null;
+  manufacturer_id: string | null;
   reminder_24h_sent_at: string | null;
   reminder_start_sent_at: string | null;
+  created_at: string;
+}
+
+export type ManufacturerOnboardingStatus = "not_started" | "pending" | "complete";
+
+export interface Manufacturer {
+  id: string;
+  name: string;
+  contact_name: string | null;
+  contact_email: string | null;
+  stripe_account_id: string | null;
+  onboarding_status: ManufacturerOnboardingStatus;
+  created_at: string;
+}
+
+export interface ManufacturerTransfer {
+  id: string;
+  drop_id: string;
+  manufacturer_id: string;
+  amount: number;
+  stripe_transfer_id: string;
   created_at: string;
 }
 
